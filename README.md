@@ -12,6 +12,8 @@
 
 ~ [Instalacija Jasmin Azemovic](https://www.youtube.com/watch?v=Z00p2zlzWH4)
 
+~ [Instalacija Elda Sultic](https://github.com/Infinity-Vault/Baze-podataka-II/blob/main/Materijali/BP2_InstaliranjeSQLServera_2019.pptx)
+
 <hr>
 
 **Materijali**
