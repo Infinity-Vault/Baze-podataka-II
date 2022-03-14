@@ -16,9 +16,9 @@
 
 ~ [Setup baza ADVENTUREWORKS2017, NORTHWIND I PUBS](https://github.com/Infinity-Vault/Baze-podataka-II/blob/main/Materijali/BPII_AdventureWorks_Northwind_Pubs_setup.pptx?raw=true)
 
-~ [Northwind baza](https://github.com/Infinity-Vault/Baze-podataka-II/blob/main/Materijali/instnwnd.sql?raw=true)
+~ [Northwind baza](https://github.com/Infinity-Vault/Baze-podataka-II/raw/main/Materijali/instnwnd.sql)
 
-~ [Pubs baza](https://github.com/Infinity-Vault/Baze-podataka-II/blob/main/Materijali/instpubs.sql)
+~ [Pubs baza](https://github.com/Infinity-Vault/Baze-podataka-II/raw/main/Materijali/instpubs.sql)
 
 <hr>
 
