@@ -134,7 +134,7 @@ CREATE TABLE Narudzbe.Kategorije  --Kreiramo tabelu
 (
 KategorijaID INT CONSTRAINT PK_Narudzba PRIMARY KEY IDENTITY (1,1),   --Kreiramo autoincrement koji pocinje od 1 i uvecava za 1 
 ImeKategorije NVARCHAR(15) NOT NULL,
-Opis NTEXT
+Opis NTEXT  --NTEXT je max velicina UNICODE niza karaktera; Isto mozemo staviti NVARCHAR(max)
 )
 
 --Zelimo da izvrsimo insert iz jedne tabele u drugu, medjutim u tabeli Kategorije imamo definisan IDENTITY nad PK-em stoga svakim dodavanjem
