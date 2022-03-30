@@ -44,6 +44,7 @@
 
 [Vjezbe_3 Elda Sultic (23.03.2022.)](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Vjezbe/Vjezbe_3)
 
+[Vjezbe_4 Elda Sultic (30.03.2022.)](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Vjezbe/Vjezbe_4)
 
 <hr>
 
