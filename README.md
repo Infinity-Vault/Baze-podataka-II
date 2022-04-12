@@ -32,6 +32,8 @@
 
 <hr>
 
+[Predavanje 6 (12.04.2022.) Drazena Gaspar](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Predavanja/Predavanje_6)
+
 <hr>
 
 **Vjezbe**
