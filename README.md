@@ -26,6 +26,10 @@
 
 <hr>
 
+[Predavanja 2021/22](https://www.dbvis.com/database/sqlserver/?gclid=CjwKCAjw6dmSBhBkEiwA_W-EoJZM9bgXNoKe668-qjKbfSqqmfJtNh0IYGbe-lcmdN7JPXNEZ7CHtRoC89EQAvD_BwE)
+
+[Vjezbe 2021/22](https://www.dbvis.com/database/sqlserver/?gclid=CjwKCAjw6dmSBhBkEiwA_W-EoJZM9bgXNoKe668-qjKbfSqqmfJtNh0IYGbe-lcmdN7JPXNEZ7CHtRoC89EQAvD_BwE)
+
 <hr>
 
 **Predavanja**
