@@ -97,17 +97,29 @@ WHERE O.OrderID IS NULL --Uslov je oni kupci koji nisu narucili nista pa je stog
 --Odrediti da li je svaki autor napisao bar po jedan naslov. (Pubs) 
 USE pubs
 GO
-SELECT TA.au_id, TA.title_id
-FROM authors AS A INNER JOIN titleauthor AS TA ON A.au_id=TA.au_id  --Spojimo autore i autore_naslove
-INNER JOIN titles AS T ON T.title_id=TA.title_id  --Spojimo naslove i autore_naslove
-WHERE TA.title_id IS NOT NULL  --Prikazemo one koji imaju naslov (min jedan)
+
+SELECT A.au_id
+FROM authors AS A
+INTERSECT  --Vrati nam zapise koji su jednaki po au_id
+SELECT TA.au_id
+FROM titleauthor AS TA
+
+--Isto se moze postici sa INNER JOIN ali DISTINCT jer INTERSECT ne vraca duplikatne vrijednosti:
+SELECT DISTINCT A.au_id
+FROM authors AS A INNER JOIN titleauthor AS TA ON TA.au_id=A.au_id
 
 --a) ako ima autora koji nisu napisali ni jedan naslov navesti njihov ID. 
 
+SELECT A.au_id
+FROM authors AS A
+EXCEPT  --Vrati nam zapise gdje id iz prve tabele ne postoji u drugoj tabeli.
 SELECT TA.au_id
-FROM authors AS A INNER JOIN titleauthor AS TA ON A.au_id=TA.au_id  --Spojimo autore i autore_naslove
-INNER JOIN titles AS T ON T.title_id=TA.title_id  --Spojimo naslove i autore_naslove
-WHERE TA.title_id IS NULL --Prikazemo one koji nisu napisali ni jedan naslov
+FROM titleauthor AS TA
+
+--Isto se moze postici sa OUTER JOIN jer on predstavlja zapise koji ne zadovoljavaju nesto:
+SELECT A.au_id
+FROM authors AS A LEFT OUTER JOIN titleauthor AS TA ON TA.au_id=A.au_id --LEFT jer uzimamo au_id iz titleauthor
+WHERE TA.au_id IS NULL
 
 --b) dati pregled autora koji su napisali bar po jedan naslov. 
 
