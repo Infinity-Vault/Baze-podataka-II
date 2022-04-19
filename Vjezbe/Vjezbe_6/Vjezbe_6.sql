@@ -90,9 +90,28 @@ WHERE O.OrderID IS NULL --Uslov je oni kupci koji nisu narucili nista pa je stog
 
 --Dati pregled vanrednih prihoda osobe. Pregled treba da sadrži sljedeæe kolone: OsobaID, Ime,
 --VanredniPrihodID, IznosPrihoda (Prihodi) 
---Dati pregled redovnih prihoda osobe. Pregled treba da sadrži sljedeæe kolone: OsobaID, Ime, RedovniPrihodID, Neto (Prihodi) 
---Prikazati ukupnu vrijednost prihoda osobe (i redovne i vanredne). Rezultat sortirati u rastuæem redoslijedu prema ID osobe. (Prihodi) 
 
+USE prihodi
+GO
+
+SELECT O.OsobaID,O.Ime,VP.VanredniPrihodiID,VP.IznosVanrednogPrihoda  
+FROM Osoba AS O LEFT OUTER JOIN VanredniPrihodi AS VP ON VP.OsobaID=O.OsobaID  --Povezemo osobe i vanredni prihodpri cemu povezemo sa outer join jer je moguce da osoba nema vanrednog prihoda.
+--NOTE idemo left jer je Osoba LEFT tabela a VanredniPrihodi RIGHT tabela
+
+
+--Dati pregled redovnih prihoda osobe. Pregled treba da sadrži sljedeæe kolone: OsobaID, Ime, RedovniPrihodID, Neto (Prihodi) 
+SELECT O.OsobaID,O.Ime,RP.RedovniPrihodiID,RP.Neto
+FROM Osoba AS O LEFT OUTER JOIN RedovniPrihodi AS RP ON RP.OsobaID=O.OsobaID  --Povezemo osobe i redovni prihod, pri cemu povezemo sa outer join jer je moguce da osoba nema redovnog prihoda.
+--NOTE idemo left jer je Osoba LEFT tabela a RedovniPrihodi RIGHT tabela
+
+--Prikazati ukupnu vrijednost prihoda osobe (i redovne i vanredne). 
+--Rezultat sortirati u rastuæem redoslijedu prema ID osobe. (Prihodi) 
+SELECT O.OsobaID,SUM(ISNULL(VP.IznosVanrednogPrihoda,0))+SUM(ISNULL(RP.Neto,0)) AS UkupanPrihod  --Provjerimo ukoliko su prihodi NULL te u tom slucaju zamjenimo samo sa 0. Ovo radimo jer se moze desiti da osoba ima redovni ali nema vanredni prihod i obratno.
+FROM Osoba AS O LEFT OUTER JOIN VanredniPrihodi AS VP ON VP.OsobaID=O.OsobaID  --Povezemo osobe i vanredni prihod pri cemu koristimo outer join jer je moguce da osoba nema vanredni prihod
+LEFT OUTER JOIN RedovniPrihodi AS RP ON RP.OsobaID=O.OsobaID  --Povezemo osobe i redovni prihod pri cemu koristimo outer join jer je moguce da nema osoba redovni prihod
+--NOTE posto je left prvo ide RP.OsobaID i VP.OsobaID pa onda =. Isto tako Osoba je LEFT tabela a VP i RP su RIGHT tabele.
+GROUP BY O.OsobaID  --Jer nije ovaj atribut dio agregatne fije, grupisemo po njemu
+ORDER BY O.OsobaID ASC  --Sortiramo uzlazno po OsobaID
 
 --Odrediti da li je svaki autor napisao bar po jedan naslov. (Pubs) 
 USE pubs
@@ -128,6 +147,7 @@ FROM authors AS A INNER JOIN titleauthor AS TA ON A.au_id=TA.au_id  --Spojimo au
 INNER JOIN  titles AS T ON T.title_id=TA.title_id  --Spojimo naslove i autore_naslove
 GROUP BY TA.au_id
 HAVING COUNT(*)>=1  --Prikazemo one koji su napisali bar po jedan naslov
+
 
 --Prikazati 10 najskupljih stavki prodaje. Upit treba da sadrži naziv proizvoda, kolièinu, cijenu i vrijednost stavke prodaje. 
 --Cijenu i vrijednost stavke prodaje zaokružiti na dvije decimale. Izlaz formatirati na naèin da uz kolièinu stoji 'kom' (npr 50kom) a uz cijenu KM
