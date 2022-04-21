@@ -30,7 +30,7 @@
 
 [Vjezbe 2021/22](https://www.dbvis.com/database/sqlserver/?gclid=CjwKCAjw6dmSBhBkEiwA_W-EoJZM9bgXNoKe668-qjKbfSqqmfJtNh0IYGbe-lcmdN7JPXNEZ7CHtRoC89EQAvD_BwE)
 
-[Schema baze AdwentureWorks2019]()
+[Schema baze AdwentureWorks2019](https://github.com/Infinity-Vault/Baze-podataka-II/raw/main/Materijali/adventureworks2008_schema.gif)
 
 <hr>
 
