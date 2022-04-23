@@ -203,10 +203,13 @@ ORDER BY PII.Quantity DESC
 --te ukupnu ostvarenu zaradu zaokruženu na dvije decimale.
 --Izlaz sortirati po zaradi u opadajuæem redoslijedu. (AdventureWorks2017)  
 SELECT (P.FirstName+' '+P.LastName) AS 'Ime i prezime',FORMAT(E.HireDate,'dd.MM.yyyy') AS DatumZaposlenja,
-EA.EmailAddress,FORMAT(SP.ModifiedDate,'dd.MM.yyyy'),ROUND(ST.SalesLastYear,2) AS UkupnoOstvarenaZarada
-FROM Sales.SalesPerson AS SP INNER JOIN  Person.Person AS P ON P.BusinessEntityID=SP.BusinessEntityID  --Spojimo prodavaca i osobuS
-INNER JOIN HumanResources.Employee AS E ON E.BusinessEntityID=SP.BusinessEntityID  --Spojimo uposlenika i prodavaca
+EA.EmailAddress,ROUND(SUM(SOD.OrderQty*SOD.UnitPrice),2) AS UkupnoOstvarenaZarada
+FROM Person.Person AS P INNER JOIN  HumanResources.Employee AS E ON P.BusinessEntityID=E.BusinessEntityID  --Spojimo osobu i uposlenika
+INNER JOIN Sales.SalesPerson AS SP ON SP.BusinessEntityID=E.BusinessEntityID  --Spojimo prodavaca i uposlenika
 INNER JOIN Person.EmailAddress AS EA ON EA.BusinessEntityID=SP.BusinessEntityID   --Spojimo adresu i prodavaca
-INNER JOIN Sales.SalesTerritory AS ST ON ST.TerritoryID=SP.TerritoryID  --Spojimo prodavacku teritoriju i prodavaca
-WHERE ST.[Group] LIKE 'Europe' --Uslov da je podrucje Europe
+INNER JOIN Sales.SalesTerritory AS ST ON ST.TerritoryID=SP.TerritoryID  --Spojimo prodavacku teritoriju i prodavaca na toj teritoriji
+INNER JOIN Sales.SalesOrderHeader AS SOH ON SOH.SalesPersonID=SP.BusinessEntityID --Spojimo narudzbu i prodavaca
+INNER JOIN Sales.SalesOrderDetail AS SOD ON SOD.SalesOrderID=SOH.SalesOrderID  --Spojimo stavku narudzbe i narudzbu
+WHERE ST.[Group] LIKE 'Europe' AND (MONTH(SOH.OrderDate)=1 AND YEAR(SOH.OrderDate)=2014) --Uslov da je na podrucje Europe i da je mjesec januar a godina 2014
+GROUP BY (P.FirstName+' '+P.LastName),FORMAT(E.HireDate,'dd.MM.yyyy'),EA.EmailAddress
 ORDER BY UkupnoOstvarenaZarada DESC
