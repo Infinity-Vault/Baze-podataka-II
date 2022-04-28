@@ -206,10 +206,10 @@ SELECT (P.FirstName+' '+P.LastName) AS 'Ime i prezime',FORMAT(E.HireDate,'dd.MM.
 EA.EmailAddress,ROUND(SUM(SOD.OrderQty*SOD.UnitPrice),2) AS UkupnoOstvarenaZarada
 FROM Person.Person AS P INNER JOIN  HumanResources.Employee AS E ON P.BusinessEntityID=E.BusinessEntityID  --Spojimo osobu i uposlenika
 INNER JOIN Sales.SalesPerson AS SP ON SP.BusinessEntityID=E.BusinessEntityID  --Spojimo prodavaca i uposlenika
-INNER JOIN Person.EmailAddress AS EA ON EA.BusinessEntityID=SP.BusinessEntityID   --Spojimo adresu i prodavaca
-INNER JOIN Sales.SalesTerritory AS ST ON ST.TerritoryID=SP.TerritoryID  --Spojimo prodavacku teritoriju i prodavaca na toj teritoriji
+INNER JOIN Person.EmailAddress AS EA ON EA.BusinessEntityID=SP.BusinessEntityID   --Spojimo mail adresu i prodavaca
 INNER JOIN Sales.SalesOrderHeader AS SOH ON SOH.SalesPersonID=SP.BusinessEntityID --Spojimo narudzbu i prodavaca
+INNER JOIN Sales.SalesTerritory AS ST ON ST.TerritoryID=SOH.TerritoryID  --Spojimo teritoriju i narudzbu na toj teritoriji
 INNER JOIN Sales.SalesOrderDetail AS SOD ON SOD.SalesOrderID=SOH.SalesOrderID  --Spojimo stavku narudzbe i narudzbu
-WHERE ST.[Group] LIKE 'Europe' AND (MONTH(SOH.OrderDate)=1 AND YEAR(SOH.OrderDate)=2014) --Uslov da je na podrucje Europe i da je mjesec januar a godina 2014
+WHERE ST.[Group] LIKE 'Europe' AND (MONTH(SOH.OrderDate)=1 AND YEAR(SOH.OrderDate)=2014) --Uslov da je na podrucje Europe te da je mjesec januar i godina 2014
 GROUP BY (P.FirstName+' '+P.LastName),FORMAT(E.HireDate,'dd.MM.yyyy'),EA.EmailAddress
 ORDER BY UkupnoOstvarenaZarada DESC
