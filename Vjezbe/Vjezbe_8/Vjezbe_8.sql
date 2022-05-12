@@ -133,11 +133,10 @@ ORDER BY BrojNarudzbi DESC --Poredamo opadajucim redosljedom po broju narudzbi (
 --Rezultate prikazati grupisane po nazivu dobavljaèa te uzeti u obzir samo one zapise gdje je sumarna kolièina 
 --na lageru veæa od 100 i vrijednost cijene proizvoda veæa od 0.
 SELECT V.Name,COUNT(P.ProductID) AS UkupanBrojProizvoda,SUM(PI.Quantity)AS UkupnaKolicinaNaLageru,
-SUM(SOD.UnitPrice*PI.Quantity)AS UkupnaVrijednostProizvodaNaLageru
+SUM(P.ListPrice*PI.Quantity)AS UkupnaVrijednostProizvodaNaLageru --Koristimo ListPrice jer je to "nabavna" cijena
 FROM Production.Product AS P INNER JOIN Production.ProductInventory AS PI ON PI.ProductID=P.ProductID --Spojimo proizvod i inventar
-INNER JOIN Sales.SalesOrderDetail AS SOD ON SOD.ProductID=P.ProductID --Spojimo detalj narudzbe i proizvod
 INNER JOIN Purchasing.ProductVendor AS PV ON PV.ProductID=P.ProductID --Spojimo dobavljaca proizvoda i  proizvod
 INNER JOIN Purchasing.Vendor AS V ON V.BusinessEntityID=PV.BusinessEntityID --Spojimo dobavljaca i dobavljaca proizvoda
-WHERE SOD.UnitPrice>0 --Uslov
+WHERE P.ListPrice>0 --Uslov
 GROUP BY V.Name --Radi agreg fija i uslova
 HAVING SUM(PI.Quantity)>100 --Uslov
