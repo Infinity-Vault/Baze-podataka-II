@@ -32,6 +32,8 @@
 
 [Schema baze AdwentureWorks2019](https://github.com/Infinity-Vault/Baze-podataka-II/raw/main/Materijali/adventureworks2008_schema.gif)
 
+[Knjiga BP2](https://github.com/Infinity-Vault/Baze-podataka-II/raw/main/Materijali/BP2_K_Knjiga.pdf)
+
 <hr>
 
 **Predavanja**
