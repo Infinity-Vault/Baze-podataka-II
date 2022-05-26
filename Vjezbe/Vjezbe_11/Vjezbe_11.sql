@@ -309,20 +309,20 @@ EXEC sp_Prodavci_Zemlje '1997-01-01','1997-12-31' --Datum saljemo kao string.
 --Bazi AdventureWorks2017. Definirati realtionships izmeðu tabela zaglavlje i stavke narudzbe.
 SELECT* 
 INTO Narudzba_zaglavlje
-FROM AdventureWorks2019.Sales.SalesOrderHeader
+FROM AdventureWorks2019.Purchasing.PurchaseOrderHeader
 
 ALTER TABLE Narudzba_zaglavlje
-ADD CONSTRAINT PK_SalesOrderID PRIMARY KEY (SalesOrderID)
+ADD CONSTRAINT PK_PurchaseOrderID PRIMARY KEY (PurchaseOrderID)
 
 SELECT* 
 INTO  Narudzba_detalji
-FROM AdventureWorks2019.Sales.SalesOrderDetail
+FROM AdventureWorks2019.Purchasing.PurchaseOrderDetail
 
 ALTER TABLE Narudzba_detalji
-ADD CONSTRAINT PK_SalesOrderID_Detalji PRIMARY KEY (SalesOrderID,SalesOrderDetailID) --Imamo kompozitni prim kljuc
+ADD CONSTRAINT PK_PurchaseOrderID_Detalji PRIMARY KEY (PurchaseOrderID,PurchaseOrderDetailID)--Imamo kompozitni primarni kljuc
 
 ALTER TABLE Narudzba_detalji
-ADD CONSTRAINT FK_Narudzba_detalji_Narudzba_zaglavlje_SalesOrderID FOREIGN KEY REFERENCES Narudzba_zaglavlje(SalesOrderID)
+ADD CONSTRAINT FK_Narudzba_detalji_Narudzba_zaglavlje_SalesOrderID FOREIGN KEY REFERENCES Narudzba_zaglavlje(PurchaseOrderID)
 
 --24.Kreirati proceduru sp_Narudzbe_Stavke sa paramterima:
 -- status, kratki cjelobrojni tip
@@ -342,7 +342,7 @@ ADD CONSTRAINT FK_Narudzba_detalji_Narudzba_zaglavlje_SalesOrderID FOREIGN KEY R
 --(možemo ostaviti bilo koje polje bez unijetog parametra), te da procedura daje rezultat ako je zadovoljena 
 --bilo koja od vrijednosti koje su navedene kao vrijednosti parametara.
 GO
-CREATE  PROCEDURE sp_Narudzbe_Stavke
+CREATE PROCEDURE sp_Narudzbe_Stavke
 (
 @status SMALLINT=NULL,
 @mjesecNarudzbe INT=NULL,
@@ -353,7 +353,7 @@ AS
 BEGIN
 SELECT DISTINCT NZ.Status,MONTH(NZ.OrderDate) 'Mjesec datuma narudzbe',
 DATEPART(QUARTER,NZ.ShipDate) 'Kvartal datuma isporuke',ND.OrderQty,ND.UnitPrice,(ND.UnitPrice*ND.OrderQty) 'Vrijednost stavke'
-FROM Narudzba_detalji AS ND INNER JOIN Narudzba_zaglavlje AS NZ ON NZ.SalesOrderID=ND.SalesOrderID  --Spojimo detalje narudzbe i zaglavlje narudzbe
+FROM Narudzba_detalji AS ND INNER JOIN Narudzba_zaglavlje AS NZ ON NZ.PurchaseOrderID=ND.PurchaseOrderID  --Spojimo detalje narudzbe i zaglavlje narudzbe
 WHERE ((NZ.Status=@status OR @status IS NULL) OR (MONTH(NZ.OrderDate)=@mjesecNarudzbe OR @mjesecNarudzbe IS NULL)
 OR (DATEPART(QUARTER,NZ.ShipDate)=@kvartalIsporuke OR @kvartalIsporuke IS NULL)) AND ((ND.UnitPrice*ND.OrderQty) BETWEEN 100 AND 500)
 ORDER BY [Vrijednost stavke] DESC
@@ -380,7 +380,7 @@ EXEC sp_Narudzbe_Stavke 3,3,4
 --(možemo ostaviti bilo koje polje bez unijetog parametra), te da procedura daje rezultat ako je zadovoljena 
 --bilo koja od vrijednosti koje su navedene kao vrijednosti parametara.
 GO
-CREATE PROCEDURE sp_Narudzbe_Stavke_sum
+CREATE  PROCEDURE sp_Narudzbe_Stavke_sum
 (
 @status SMALLINT=NULL,
 @mjesecDatumaNarudzbe INT=NULL,
@@ -390,7 +390,7 @@ AS
 BEGIN
 SELECT NZ.Status,MONTH(NZ.OrderDate) 'Mjesec datuma narudzbe',DATEPART(QUARTER,NZ.ShipDate) 'Kvartal datuma isporuke',
 SUM(ND.UnitPrice*ND.OrderQty) 'Ukupna vrijednost narudzbe'
-FROM Narudzba_detalji AS ND INNER JOIN Narudzba_zaglavlje AS NZ ON NZ.SalesOrderID=ND.SalesOrderID --Spojimmo detalje narudzbe i zaglavlje narudzbe
+FROM Narudzba_detalji AS ND INNER JOIN Narudzba_zaglavlje AS NZ ON NZ.PurchaseOrderID=ND.PurchaseOrderID --Spojimmo detalje narudzbe i zaglavlje narudzbe
 WHERE (NZ.status=@status OR @status IS NULL) OR (MONTH(NZ.OrderDate)=@mjesecDatumaNarudzbe OR @mjesecDatumaNarudzbe IS NULL)
 OR (DATEPART(QUARTER,NZ.ShipDate)=@kvartalIsporuke OR @kvartalIsporuke IS NULL) 
 GROUP BY NZ.Status,MONTH(NZ.OrderDate) ,DATEPART(QUARTER,NZ.ShipDate)
