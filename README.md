@@ -70,5 +70,7 @@
 
 [Vjezbe_11 Elda Sultic (25.05.2022.)](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Vjezbe/Vjezbe_11)
 
+[Vjezbe_12 Elda Sultic (01.06.2022.)](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Vjezbe/Vjezbe_12)
+
 <hr>
 
