@@ -193,7 +193,7 @@ GO
 -- LastName,
 -- Gender. 
 GO 
-CREATE PROCEDURE sp_Zaposlenici_SelectByFirstNameLastNameGender
+CREATE OR ALTER PROCEDURE sp_Zaposlenici_SelectByFirstNameLastNameGender
 (
 @EmployeeID INT=NULL,
 @FirstName NVARCHAR(50)=NULL,
@@ -205,8 +205,8 @@ BEGIN
 SELECT E.BusinessEntityID,P.LastName,P.FirstName,E.Gender
 FROM AdventureWorks2019.Person.Person AS P INNER JOIN AdventureWorks2019.HumanResources.Employee AS E --Spojimo osobu i uposlenika
 ON P.BusinessEntityID=E.BusinessEntityID
-WHERE(E.BusinessEntityID=@EmployeeID OR @EmployeeID IS NULL) OR (LastName=@LastName OR @LastName IS NULL)
-OR (FirstName=@FirstName OR @FirstName IS NULL) OR (Gender=@Gender OR @Gender IS NULL) 
+WHERE E.BusinessEntityID=@EmployeeID  OR LastName=@LastName 
+OR FirstName=@FirstName  OR Gender=@Gender   --Nasuprot prethodnim zadacima, ovdje hocemo da upit ne vrati nista ako nije zadovoljen nijedan parametar, stoga ne postavljamo na NULL ako nije zadovoljen
 END
 GO
 --Proceduru kreirati tako da je prilikom izvršavanja moguæe unijeti bilo koji broj parametara (možemo ostaviti 
@@ -234,8 +234,8 @@ BEGIN
 SELECT E.BusinessEntityID,P.LastName,P.FirstName,E.Gender
 FROM AdventureWorks2019.Person.Person AS P INNER JOIN AdventureWorks2019.HumanResources.Employee AS E
 ON P.BusinessEntityID=E.BusinessEntityID
-WHERE ((E.BusinessEntityID=@EmployeeID OR @EmployeeID IS NULL) OR (LastName=@LastName OR @LastName IS NULL)
-OR (FirstName=@FirstName OR @FirstName IS NULL)) AND Gender='F' --Povezemo sa AND jer mora biti zensko svaki zapis.
+WHERE E.BusinessEntityID=@EmployeeID  OR LastName=@LastName 
+OR FirstName=@FirstName  AND Gender='F' --Povezemo sa AND jer mora biti zensko svaki zapis.
 END
 GO
 --Nakon izmjene pokrenuti proceduru za sljedeæe vrijednosti parametara:
