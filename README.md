@@ -75,3 +75,16 @@
 [Vjezbe_13](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Vjezbe/Vjezbe_13)
 <hr>
 
+**Ispitni**
+
+<hr>
+
+[10.9.2021](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Ispiti/2021-09-10)
+
+[24.6.2021](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Ispiti/2021-06-24)
+
+[24.7.2020](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Ispiti/2020-07-24)
+
+[19.9.2019](https://github.com/Infinity-Vault/Baze-podataka-II/tree/main/Ispiti/2019-09-19)
+
+<hr>
