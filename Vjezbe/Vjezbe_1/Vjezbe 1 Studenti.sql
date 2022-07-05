@@ -22,7 +22,7 @@ Svrha_projekta NVARCHAR(15) NOT NULL,
 Cilj_projekta NVARCHAR(20)
 )
 ALTER TABLE Projekti --Kreiramo primarni kljuc sa autoincrementom (IDENTITY, prvi parametar odakle krecemo drugi za koliko povecavamo);
-ADD  Sifra_projekta NVARCHAR(10) CONSTRAINT PK_SifraProjekta PRIMARY KEY IDENTITY(1,1)
+ADD  Sifra_projekta NVARCHAR(10) PRIMARY KEY
 
 ALTER TABLE Aplikant --Kreiramo spoljni kljuc, konvencija je da se imenuje FK_TabelaIzKojeSePrenosi_TabelaUKojuSePrenosi;
 ADD projekatID NVARCHAR(10) NOT NULL CONSTRAINT FK_Aplikant_Projekt FOREIGN KEY REFERENCES Projekti(Sifra_projekta)
