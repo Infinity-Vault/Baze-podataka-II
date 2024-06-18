@@ -4,11 +4,11 @@ GO
 USE ispitni090922_1
 --2 U kreiranoj bazi podataka kreirati tabele slijedecom strukturom
 --a)	Uposlenici
---•	UposlenikID, 9 karaktera fiksne duzine i primarni kljuc,
---•	Ime 20 karaktera obavezan unos,
---•	Prezime 20 karaktera obavezan unos
---•	DatumZaposlenja polje za unos datuma i vremena obavezan unos
---•	Opis posla 50 karaktera obavezan unos
+--â€¢	UposlenikID, 9 karaktera fiksne duzine i primarni kljuc,
+--â€¢	Ime 20 karaktera obavezan unos,
+--â€¢	Prezime 20 karaktera obavezan unos
+--â€¢	DatumZaposlenja polje za unos datuma i vremena obavezan unos
+--â€¢	Opis posla 50 karaktera obavezan unos
 CREATE TABLE Uposlenik
 (
 	UposlenikID CHAR(9) PRIMARY KEY,
@@ -19,13 +19,13 @@ CREATE TABLE Uposlenik
 )
 
 --b)	Naslovi
---•	NaslovID 6 karaktera primarni kljuc,
---•	Naslov 80 karaktera obavezan unos,
---•	Tip 12 karaktera fiksne duzine obavezan unos
---•	Cijena novcani tip podatka,
---•	NazivIzdavaca 40 karaktera,
---•	GradIzdavaca 20 karaktera,
---•	DrzavaIzdavaca 30 karaktera
+--â€¢	NaslovID 6 karaktera primarni kljuc,
+--â€¢	Naslov 80 karaktera obavezan unos,
+--â€¢	Tip 12 karaktera fiksne duzine obavezan unos
+--â€¢	Cijena novcani tip podatka,
+--â€¢	NazivIzdavaca 40 karaktera,
+--â€¢	GradIzdavaca 20 karaktera,
+--â€¢	DrzavaIzdavaca 30 karaktera
 CREATE TABLE Naslovi
 (
 	NaslovID VARCHAR(6) PRIMARY KEY,
@@ -38,11 +38,11 @@ CREATE TABLE Naslovi
 )
 
 --c)	Prodaja
---•	ProdavnicaID 4 karktera fiksne duzine, strani i primarni kljuc
---•	Broj narudzbe 20 karaktera primarni kljuc,
---•	NaslovID 6 karaktera strani i primarni kljuc
---•	DatumNarudzbe polje za unos datuma i vremena obavezan unos
---•	Kolicina skraceni cjelobrojni tip obavezan unos
+--â€¢	ProdavnicaID 4 karktera fiksne duzine, strani i primarni kljuc
+--â€¢	Broj narudzbe 20 karaktera primarni kljuc,
+--â€¢	NaslovID 6 karaktera strani i primarni kljuc
+--â€¢	DatumNarudzbe polje za unos datuma i vremena obavezan unos
+--â€¢	Kolicina skraceni cjelobrojni tip obavezan unos
 CREATE TABLE Prodaja
 (
 	ProdavnicaID CHAR(4) CONSTRAINT FK_Prodavnica FOREIGN KEY 
@@ -56,9 +56,9 @@ CREATE TABLE Prodaja
 )
 
 --d)	Prodavnice
---•	ProdavnicaID 4 karaktera fiksne duzine primarni kljuc
---•	NazivProdavnice 40 karaktera
---•	Grad 40 karaktera
+--â€¢	ProdavnicaID 4 karaktera fiksne duzine primarni kljuc
+--â€¢	NazivProdavnice 40 karaktera
+--â€¢	Grad 40 karaktera
 CREATE TABLE Prodavnice
 (
 	ProdavnicaID CHAR(4) PRIMARY KEY,
@@ -68,11 +68,11 @@ CREATE TABLE Prodavnice
 
 --3 Iz baze podataka pubs u svoju bazu prebaciti slijedece podatke
 --a)	U tabelu Uposlenici dodati sve uposlenike
---•	emp_id -> UposlenikID
---•	fname -> Ime
---•	lname -> Prezime
---•	hire_date - > DatumZaposlenja
---•	job_desc - > Opis posla
+--â€¢	emp_id -> UposlenikID
+--â€¢	fname -> Ime
+--â€¢	lname -> Prezime
+--â€¢	hire_date - > DatumZaposlenja
+--â€¢	job_desc - > Opis posla
 INSERT INTO Uposlenici 
 (UposlenikID, Ime, Prezime, DatumZaposlenja, OpisPosla)
 SELECT
@@ -86,13 +86,13 @@ INNER JOIN pubs.dbo.jobs AS j
 ON e.job_id=j.job_id
 
 --b)	U tabelu naslovi dodati sve naslove, na mjestu gdje nema pohranjenih podataka o --nazivima izdavaca zamijeniti vrijednost sa nepoznat izdavac
---•	Title_id -> NaslovID
---•	Title->Naslov
---•	Type->Tip
---•	Price->Cijena
---•	Pub_name->NazivIzdavaca
---•	City->GradIzdavaca
---•	Country-DrzavaIzdavaca
+--â€¢	Title_id -> NaslovID
+--â€¢	Title->Naslov
+--â€¢	Type->Tip
+--â€¢	Price->Cijena
+--â€¢	Pub_name->NazivIzdavaca
+--â€¢	City->GradIzdavaca
+--â€¢	Country-DrzavaIzdavaca
 INSERT INTO Naslovi
 (NaslovID, Naslov, Tip, Cijena, NazivIzdavaca, GradIzdavaca, DrzavaIzdavaca)
 SELECT
@@ -108,11 +108,11 @@ INNER JOIN pubs.dbo.publishers AS p
 ON t.pub_id=p.pub_id
 
 --c)	U tabelu prodaja dodati sve stavke iz tabele prodaja
---•	Stor_id->ProdavnicaID
---•	Order_num->BrojNarudzbe
---•	titleID->NaslovID,
---•	ord_date->DatumNarudzbe
---•	qty->Kolicina
+--â€¢	Stor_id->ProdavnicaID
+--â€¢	Order_num->BrojNarudzbe
+--â€¢	titleID->NaslovID,
+--â€¢	ord_date->DatumNarudzbe
+--â€¢	qty->Kolicina
 INSERT INTO Prodaja
 (ProdavnicaID, BrojNarudzbe, NaslovID, DatumNarudzbe, Kolicina)
 SELECT
@@ -124,9 +124,9 @@ SELECT
 FROM pubs.dbo.sales AS s
 
 --d)	U tabelu prodavnice dodati sve prodavnice
---•	Stor_id->prodavnicaID
---•	Store_name->NazivProdavnice
---•	City->Grad
+--â€¢	Stor_id->prodavnicaID
+--â€¢	Store_name->NazivProdavnice
+--â€¢	City->Grad
 INSERT INTO Prodavnice
 (ProdavnicaID, NazivProdavnice, Grad)
 SELECT
@@ -153,11 +153,11 @@ EXEC sp_delete_uposlenik 'A-C71970F'
 
 --b)	Kreirati tabelu Uposlenici_log slijedeca struktura
 --Uposlenici_log
---•	UposlenikID 9 karaktera fiksne duzine
---•	Ime 20 karaktera
---•	Prezime 20 karakera,
---•	DatumZaposlenja polje za unos datuma i vremena
---•	Opis posla 50 karaktera
+--â€¢	UposlenikID 9 karaktera fiksne duzine
+--â€¢	Ime 20 karaktera
+--â€¢	Prezime 20 karakera,
+--â€¢	DatumZaposlenja polje za unos datuma i vremena
+--â€¢	Opis posla 50 karaktera
 CREATE TABLE Uposlenici_log
 (
 	UposlenikID CHAR(9),
@@ -205,19 +205,19 @@ FROM Northwind.dbo.[Order Details] AS od
 INNER JOIN Northwind.dbo.Orders AS o
 ON od.OrderID=o.OrderID
 WHERE DATEDIFF(DAY, o.OrderDate, o.ShippedDate)<=7
-AND o.ShipCity IN ('Madrid', 'Seattle', 'München')
+AND o.ShipCity IN ('Madrid', 'Seattle', 'MÃ¼nchen')
 GROUP BY o.OrderID
 ORDER BY SUM(od.Quantity) DESC
 
 --f)	Napisati upit kojim ce se prikazati brojNarudzbe,datumNarudzbe i sifra. --Prikazati samo one zapise iz tabele Prodaja ciji broj narudzbe ISKLJICIVO POCINJE --jednim slovom, ili zavrsava jednim slovom (Novokreirana baza)
 --Sifra se sastoji od slijedecih vrijednosti:
---•	Brojevi (samo brojevi) uzeti iz broja narudzbi,
---•	Karakter /
---•	Zadnja dva karaktera godine narudbze /
---•	Karakter /
---•	Id naslova
---•	Karakter /
---•	Id prodavnice
+--â€¢	Brojevi (samo brojevi) uzeti iz broja narudzbi,
+--â€¢	Karakter /
+--â€¢	Zadnja dva karaktera godine narudbze /
+--â€¢	Karakter /
+--â€¢	Id naslova
+--â€¢	Karakter /
+--â€¢	Id prodavnice
 --Za broj narudzbe 772a sifra je 722/19/PS2091/6380
 --Za broj narudzbe N914008 sifra je 914008/19/PS2901/6380
 SELECT p.BrojNarudzbe, p.DatumNarudzbe,
