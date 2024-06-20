@@ -174,21 +174,21 @@ GROUP BY MONTH(poh.OrderDate)
 --pojedinačno. Uslov je da su narudžbe kreirane u 2011 ili 2012 godini, te da je u okviru --jedne narudžbe
 --odobren popust na dvije ili više stavki. Također uzeti u obzir samo one narudžbe koje su- -isporučene u
 --Veliku Britaniju, Kanadu ili Francusku. (AdventureWorks2017)
-SELECT e.BusinessEntityID, COUNT(*) BrojNarudzbi
-FROM AdventureWorks2017.HumanResources.Employee AS e
-INNER JOIN AdventureWorks2017.Sales.SalesPerson AS sp
-ON e.BusinessEntityID=sp.BusinessEntityID
-INNER JOIN AdventureWorks2017.Sales.SalesOrderHeader AS soh
-ON sp.BusinessEntityID=soh.SalesPersonID
-INNER JOIN AdventureWorks2017.Sales.SalesOrderDetail AS sod
-ON soh.SalesOrderID=sod.SalesOrderID
-INNER JOIN AdventureWorks2017.Sales.SalesTerritory AS st
-ON soh.TerritoryID=st.TerritoryID
-WHERE YEAR(soh.OrderDate) IN (2011, 2012) 
-AND st.Name IN ('United Kingdom', 'Canada', 'France')
-AND (SELECT COUNT(*) FROM AdventureWorks2017.Sales.SalesOrderDetail AS sod1
-	 WHERE sod1.SalesOrderID=soh.SalesOrderID AND sod1.UnitPriceDiscount>0)>=2
-GROUP BY e.BusinessEntityID
+SELECT PP.FirstName, PP.LastName, COUNT(*) 'Ukupan broj narudžbi'
+FROM AdventureWorks2017.Sales.SalesOrderHeader AS SOH
+INNER JOIN AdventureWorks2017.Sales.SalesPerson AS SP
+ON SOH.SalesPersonID=SP.BusinessEntityID
+INNER JOIN AdventureWorks2017.Person.Person AS PP
+ON SP.BusinessEntityID=PP.BusinessEntityID
+INNER JOIN AdventureWorks2017.Sales.SalesTerritory AS ST
+ON SOH.TerritoryID=ST.TerritoryID
+WHERE YEAR(SOH.OrderDate) IN (2011, 2012) AND ST.Name IN ('United Kingdom', 'Canada', 'France') AND
+(
+    SELECT COUNT(*)
+    FROM AdventureWorks2017.Sales.SalesOrderDetail AS SOD
+    WHERE SOD.SalesOrderID=SOH.SalesOrderID AND SOD.UnitPriceDiscount>0
+) >=2
+GROUP BY PP.FirstName, PP.LastName
 
 --d) (11 bodova) Napisati upit koji će prikazati sljedeće podatke o proizvodima: naziv --proizvoda, naziv
 --kompanije dobavljača, količinu na skladištu, te kreiranu šifru proizvoda. Šifra se --sastoji od sljedećih
