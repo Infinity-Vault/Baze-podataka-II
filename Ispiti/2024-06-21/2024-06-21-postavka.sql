@@ -5,7 +5,7 @@
 --•	UposlenikID, cjelobrojni tip i primarni kljuc, autoinkrement,
 --•	Ime 10 UNICODE karaktera obavezan unos,
 --•	Prezime 20 UNICODE karaktera obavezan unos
---•	DatumZaposlenja polje za unos datuma i vremena obavezan unos
+--•	DatumRodjenja polje za unos datuma i vremena obavezan unos
 --•	UkupanBrojTeritorija, cjelobrojni tip
 
 --b)	Narudzbe
@@ -16,10 +16,10 @@
 --•	AdresaKupca, 60 UNICODE karaktera
 
 --c) Proizvodi
---•	ProizvodID, cjelobrojni tip i primarni ključ, auloinkrement
+--•	ProizvodID, cjelobrojni tip i primarni ključ, autoinkrement
 --•	NazivProizvoda, 40 UNICODE karaktera (obavezan unos)
---•	NazivKompanijeDobavljaca, 40 UNICODE karaktcra
---•	NazivKategorije, 15 UNICODE Icaraktera
+--•	NazivKompanijeDobavljaca, 40 UNICODE karaktera
+--•	NazivKategorije, 15 UNICODE karaktera
 
 --d) StavkeNarudzbe
 --•	NarudzbalD, cjelobrojni tip strani i primami ključ
@@ -34,7 +34,7 @@
 --a) U tabelu Uposlenici dodati sve uposlenike
 --•	EmployeelD -> UposlenikID
 --•	FirstName -> Ime
---•	LastNamc -> Prezime
+--•	LastName -> Prezime
 --•	BirthDate -> DatumRodjenja
 --•	lzračunata vrijednost za svakog uposlenika na osnovu EmployeeTerritories-:----UkupanBrojTeritorija
 
@@ -61,7 +61,7 @@
 --5 bodova
 
 --4. 
---a) (4 boda) U tabelu StavkeNaudzbe dodati 2 nove izračunate kolone: vrijednostNarudzbeSaPopustom i vrijednostNarudzbeBezPopusta. Izzačunate kolonc već čuvaju podatke na osnovu podataka iz kolona! 
+--a) (4 boda) U tabelu StavkeNarudzbe dodati 2 nove izračunate kolone: vrijednostNarudzbeSaPopustom i vrijednostNarudzbeBezPopusta. Izzačunate kolonc već čuvaju podatke na osnovu podataka iz kolona! 
 
 --b) (5 bodom) Kreirati pogled v_select_orders kojim ćc se prikazati ukupna zarada po uposlenicima od narudzbi kreiranih u zadnjem kvartalu 1996. godine. Pogledom je potrebno prikazati spojeno ime i prezime uposlenika, ukupna zarada sa popustom zaokrzena na dvije decimale i ukupna zarada bez popusta. Za prikaz ukupnih zarada koristiti OBAVEZNO koristiti izračunate kolone iz zadatka 4a. (Novokreirana baza)
 
