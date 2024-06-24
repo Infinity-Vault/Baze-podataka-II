@@ -246,6 +246,26 @@ WHERE p.ListPrice <
 
 --5. 
 --a) (12 bodova) Pronaći najprodavanije proizvode, koji nisu na lisli top 10 najprodavanijih proizvoda u zadnjih 11 godina. (AdventureWorks2017) 
+SELECT 
+	sod.ProductID,
+	COUNT(sod.ProductID) ProdanaKolicina
+FROM AdventureWorks2017.Sales.SalesOrderDetail AS sod
+WHERE sod.ProductID NOT IN (
+SELECT sq.ID
+FROM
+(
+	SELECT TOP 10 
+		sod.ProductID ID,
+		COUNT(sod.ProductID) Broj
+	FROM AdventureWorks2017.Sales.SalesOrderDetail AS sod
+	INNER JOIN AdventureWorks2017.Sales.SalesOrderHeader AS soh
+	ON sod.SalesOrderID=soh.SalesOrderID
+	WHERE DATEDIFF(YEAR, soh.OrderDate, GETDATE())<=11
+	GROUP BY sod.ProductID
+	ORDER BY COUNT(sod.ProductID) DESC
+) AS sq)
+GROUP BY sod.ProductID
+ORDER BY COUNT(sod.ProductID) DESC
 
 --b) (16 bodova) Prikazati ime i prezime kupca, id narudzbe, te ukupnu vrijednost narudzbe sa popustom (zaokruzenu na dvije decimale), uz uslov da su na nivou pojedine narudžbe naručeni proizvodi iz svih kategorija. (AdventureWorks2017) 
 
