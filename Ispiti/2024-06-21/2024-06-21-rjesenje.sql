@@ -268,6 +268,29 @@ GROUP BY sod.ProductID
 ORDER BY COUNT(sod.ProductID) DESC
 
 --b) (16 bodova) Prikazati ime i prezime kupca, id narudzbe, te ukupnu vrijednost narudzbe sa popustom (zaokruzenu na dvije decimale), uz uslov da su na nivou pojedine narudžbe naručeni proizvodi iz svih kategorija. (AdventureWorks2017) 
+SELECT 
+	pp.FirstName,
+	pp.LastName, 
+	soh.SalesOrderID,
+	round(sum(sod.UnitPrice*sod.OrderQty*(1-sod.UnitPriceDiscount)),2) narudzba_sa_popustom, 
+	COUNT(DISTINCT pc.ProductCategoryID) broj_kategorija
+FROM AdventureWorks2017.Person.Person AS pp
+INNER JOIN AdventureWorks2017.Sales.Customer AS c 
+ON pp.BusinessEntityID=c.PersonID
+INNER JOIN AdventureWorks2017.Sales.SalesOrderHeader AS soh 
+ON c.CustomerID=soh.CustomerID
+INNER JOIN AdventureWorks2017.Sales.SalesOrderDetail AS sod 
+ON soh.SalesOrderID=sod.SalesOrderID
+INNER JOIN AdventureWorks2017.Production.Product AS p 
+ON sod.ProductID=p.ProductID
+INNER JOIN AdventureWorks2017.Production.ProductSubcategory AS psc 
+ON p.ProductSubcategoryID=psc.ProductSubcategoryID
+INNER JOIN AdventureWorks2017.Production.ProductCategory AS pc 
+ON psc.ProductCategoryID=pc.ProductCategoryID
+GROUP BY pp.FirstName,pp.LastName,soh.SalesOrderID
+HAVING COUNT(DISTINCT pc.ProductCategoryID) =
+		(SELECT COUNT(DISTINCT pc1.ProductCategoryID)
+		FROM AdventureWorks2017.Production.ProductCategory AS pc1)
 
 --28 bodova 
 
