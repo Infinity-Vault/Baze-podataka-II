@@ -143,7 +143,9 @@ FROM AdventureWorks2017.Sales.SalesOrderDetail AS sod
 --samo one uposlenike koji su trenutno aktivni, odnosno rade na datom odjelu. Također, -samo- uzeti u obzir
 --one uposlenike koji imaju više od 10 godina radnog staža (ne uključujući graničnu --vrijednost). Rezultate
 --sortirati preba broju uposlenika u opadajućem redoslijedu. (AdventureWorks2017)
-SELECT d.Name Odjel, COUNT(e.BusinessEntityID) BrojUposlenikaPoOdjelu
+SELECT 
+	d.Name Odjel, 
+	COUNT(e.BusinessEntityID) BrojUposlenikaPoOdjelu
 FROM AdventureWorks2017.HumanResources.Department AS d
 INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory  AS edh
 ON d.DepartmentID=edh.DepartmentID
@@ -157,10 +159,12 @@ ORDER BY 2 DESC
 --ukupnu količinu primljene robe, isključivo u 2012 godini. Uslov je da su troškovi -prevoza- bili između
 --500 i 2500, a da je dostava izvršena CARGO transportom. Također u rezultatima upita je --potrebno
 --prebrojati stavke narudžbe na kojima je odbijena količina veća od 100. --(AdventureWorks2017)
-SELECT MONTH(poh.OrderDate) Mjesec, SUM(pod.LineTotal) UkupnaVrijednost, 
-SUM(pod.OrderQty) PorucenaKolicina,
-SUM(pod.ReceivedQty) PrimljenaKolicina,
-SUM(IIF(pod.RejectedQty>100,1,0)) OdbijenaKolicinaVecaOdSto
+SELECT 
+	MONTH(poh.OrderDate) Mjesec, 
+	SUM(pod.LineTotal) UkupnaVrijednost, 
+	SUM(pod.OrderQty) PorucenaKolicina,
+	SUM(pod.ReceivedQty) PrimljenaKolicina,
+	SUM(IIF(pod.RejectedQty>100,1,0)) OdbijenaKolicinaVecaOdSto
 FROM AdventureWorks2017.Purchasing.PurchaseOrderHeader AS poh
 INNER JOIN AdventureWorks2017.Purchasing.PurchaseOrderDetail AS pod
 ON poh.PurchaseOrderID=pod.PurchaseOrderID
@@ -174,7 +178,10 @@ GROUP BY MONTH(poh.OrderDate)
 --pojedinačno. Uslov je da su narudžbe kreirane u 2011 ili 2012 godini, te da je u okviru --jedne narudžbe
 --odobren popust na dvije ili više stavki. Također uzeti u obzir samo one narudžbe koje su- -isporučene u
 --Veliku Britaniju, Kanadu ili Francusku. (AdventureWorks2017)
-SELECT PP.FirstName, PP.LastName, COUNT(*) 'Ukupan broj narudžbi'
+SELECT 
+	PP.FirstName, 
+	PP.LastName, 
+	COUNT(*) 'Ukupan broj narudžbi'
 FROM AdventureWorks2017.Sales.SalesOrderHeader AS SOH
 INNER JOIN AdventureWorks2017.Sales.SalesPerson AS SP
 ON SOH.SalesPersonID=SP.BusinessEntityID
@@ -201,10 +208,14 @@ GROUP BY PP.FirstName, PP.LastName
 --suprotnom uzeti obrnutu vrijednost broja
 --Npr. Za proizvod sa nazivom Chai i sa dobavljačem naziva Exotic Liquids, šifra će btiti --Ch/Li1a.
 --37 bodova
-SELECT p.ProductName, s.CompanyName, p.UnitsInStock,
-LEFT(p.ProductName, 2) + '/' +  SUBSTRING(s.CompanyName, CHARINDEX(' ', s.CompanyName)+1, 2) + 
-IIF(LEN(p.ProductID)=1, CAST(p.ProductID AS NVARCHAR) + 'a', REVERSE(p.ProductID))
-SifraProizvoda
+SELECT 
+	p.ProductName, 
+	s.CompanyName, 
+	p.UnitsInStock,
+	LEFT(p.ProductName, 2) 
+	+ '/' 
+	+  SUBSTRING(s.CompanyName, CHARINDEX(' ', s.CompanyName)+1, 2) 
+	+ IIF(LEN(p.ProductID)=1, CAST(p.ProductID AS NVARCHAR) + 'a', REVERSE(p.ProductID)) SifraProizvoda
 FROM Northwind.dbo.Products AS p
 INNER JOIN Northwind.dbo.Suppliers AS s
 ON p.SupplierID=s.SupplierID
