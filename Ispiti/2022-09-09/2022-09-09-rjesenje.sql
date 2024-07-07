@@ -182,9 +182,10 @@ SELECT * FROM Uposlenici_log
 EXEC sp_delete_uposlenik 'A-R89858F'
 
 --d)	Prikazati sve uposlenike zenskog pola koji imaju vise od 10 godina radnog -staza,- a rade na Production ili Marketing odjelu. Upitom je potrebno pokazati -spojeno -ime i prezime uposlenika, godine radnog staza, te odjel na kojem rade -uposlenici. -Rezultate upita sortirati u rastucem redoslijedu prema nazivu odjela,- te -opadajucem prema godinama radnog staza (AdventureWorks2019)
-SELECT CONCAT(p.FirstName, ' ', p.LastName) ImePrezime,
-DATEDIFF(YEAR, e.HireDate, GETDATE()) Staz,
-d.Name Odjel
+SELECT 
+	CONCAT(p.FirstName, ' ', p.LastName) ImePrezime,
+	DATEDIFF(YEAR, e.HireDate, GETDATE()) Staz,
+	d.Name Odjel
 FROM AdventureWorks2017.HumanResources.Employee AS e
 INNER JOIN AdventureWorks2017.Person.Person AS p
 ON e.BusinessEntityID=p.BusinessEntityID
@@ -198,9 +199,11 @@ AND edh.EndDate IS NULL
 ORDER BY d.Name, DATEDIFF(YEAR, e.HireDate, GETDATE()) DESC
 
 --e)	Kreirati upit kojim ce se prikazati koliko ukupno je naruceno komada proizvoda --za svaku narudzbu pojedinacno, te ukupnu vrijednost narudzbe sa i bez popusta. --Uzwti u obzir samo one narudzbe kojima je datum narudzbe do datuma isporuke --proteklo manje od 7 dana (ukljuciti granicnu vrijednost), a isporucene su kupcima --koji zive na podrucju Madrida, Minhena,Seatle. Rezultate upita sortirati po broju- -komada u opadajucem redoslijedu, a vrijednost je potrebno zaokruziti na dvije --decimale (Northwind)
-SELECT o.OrderID Narudzba, SUM(od.Quantity) UkupnoKomada,
-ROUND(SUM(od.UnitPrice*Quantity), 2) VrijednostBezPopusta,
-ROUND(SUM((od.UnitPrice*(1-od.Discount))*od.Quantity), 2) VrijednostSaPopustom
+SELECT 
+	o.OrderID Narudzba, 
+	SUM(od.Quantity) UkupnoKomada,
+	ROUND(SUM(od.UnitPrice*Quantity), 2) VrijednostBezPopusta,
+	ROUND(SUM((od.UnitPrice*(1-od.Discount))*od.Quantity), 2) VrijednostSaPopustom
 FROM Northwind.dbo.[Order Details] AS od
 INNER JOIN Northwind.dbo.Orders AS o
 ON od.OrderID=o.OrderID
@@ -220,15 +223,18 @@ ORDER BY SUM(od.Quantity) DESC
 --•	Id prodavnice
 --Za broj narudzbe 772a sifra je 722/19/PS2091/6380
 --Za broj narudzbe N914008 sifra je 914008/19/PS2901/6380
-SELECT p.BrojNarudzbe, p.DatumNarudzbe,
-REPLACE(
-REPLACE(SUBSTRING(REPLACE(p.BrojNarudzbe, PATINDEX('%[0-9]%', p.BrojNarudzbe), LEN(p.BrojNarudzbe)), PATINDEX('%[0-9]%', REPLACE(p.BrojNarudzbe, PATINDEX('%[0-9]%', p.BrojNarudzbe), LEN(p.BrojNarudzbe))), LEN(p.BrojNarudzbe)),'a',' ')
-+ '/' 
-+ REVERSE(RIGHT(REVERSE(YEAR(p.DatumNarudzbe)), 2))
-+ '/'
-+ p.NaslovID 
-+ '/'
-+ p.ProdavnicaID, ' ', '') Sifra
+SELECT 
+	p.BrojNarudzbe, 
+	p.DatumNarudzbe,
+	--neam pojma kako ovo ispod radi...
+	REPLACE(
+	REPLACE(SUBSTRING(REPLACE(p.BrojNarudzbe, PATINDEX('%[0-9]%', p.BrojNarudzbe), LEN(p.BrojNarudzbe)), PATINDEX('%[0-9]%', REPLACE(p.BrojNarudzbe, PATINDEX('%[0-9]%', p.BrojNarudzbe), LEN(p.BrojNarudzbe))), LEN(p.BrojNarudzbe)),'a',' ')
+	+ '/' 
+	+ REVERSE(RIGHT(REVERSE(YEAR(p.DatumNarudzbe)), 2))
+	+ '/'
+	+ p.NaslovID 
+	+ '/'
+	+ p.ProdavnicaID, ' ', '') Sifra
 FROM Prodaja AS p
 WHERE p.BrojNarudzbe LIKE '[A-Z][0-9]%' OR p.BrojNarudzbe LIKE '%[0-9][A-Z]'
 
@@ -236,33 +242,39 @@ WHERE p.BrojNarudzbe LIKE '[A-Z][0-9]%' OR p.BrojNarudzbe LIKE '%[0-9][A-Z]'
 --a)	Prikazati nazive odjela gdje radi najmanje odnosno najvise uposlenika --(AdventureWorks2019)
 SELECT * FROM
 (
-SELECT TOP 1 d.Name, COUNT(*) BrojRadnika
-FROM AdventureWorks2017.HumanResources.Department AS d
-INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
-ON d.DepartmentID=edh.DepartmentID
-INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
-ON edh.BusinessEntityID=e.BusinessEntityID
-GROUP BY d.Name
-ORDER BY 2 DESC
+	SELECT TOP 1 
+		d.Name, 
+		COUNT(*) BrojRadnika
+	FROM AdventureWorks2017.HumanResources.Department AS d
+	INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
+	ON d.DepartmentID=edh.DepartmentID
+	INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
+	ON edh.BusinessEntityID=e.BusinessEntityID
+	GROUP BY d.Name
+	ORDER BY 2 DESC
 ) AS sq1
 UNION
 SELECT * FROM
 (
-SELECT TOP 1 d.Name, COUNT(*) BrojRadnika
-FROM AdventureWorks2017.HumanResources.Department AS d
-INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
-ON d.DepartmentID=edh.DepartmentID
-INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
-ON edh.BusinessEntityID=e.BusinessEntityID
-GROUP BY d.Name
-ORDER BY 2
+	SELECT TOP 1 
+		d.Name, 
+		COUNT(*) BrojRadnika
+	FROM AdventureWorks2017.HumanResources.Department AS d
+	INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
+	ON d.DepartmentID=edh.DepartmentID
+	INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
+	ON edh.BusinessEntityID=e.BusinessEntityID
+	GROUP BY d.Name
+	ORDER BY 2
 ) AS sq2
 
 --b)	Prikazati spojeno ime i prezime osobe,spol, ukupnu vrijednost redovnih bruto --prihoda, ukupnu vrijednost vandrednih prihoda, te sumu ukupnih vandrednih prihoda --i ukupnih redovnih prihoda. Uslov je da dolaze iz Latvije, Kine ili Indonezije a --poslodavac kod kojeg rade je registrovan kao javno ustanova (Prihodi)
-SELECT CONCAT(o.Ime, ' ', o.PrezIme) ImePrezime, o.Spol,
-SUM(rp.Bruto) RedovniPrihodi,
-SUM(vp.IznosVanrednogPrihoda) VanredniPrihodi,
-SUM(rp.Bruto+vp.IznosVanrednogPrihoda) UkupniPrihodi
+SELECT 
+	CONCAT(o.Ime, ' ', o.PrezIme) ImePrezime, 
+	o.Spol,
+	SUM(rp.Bruto) RedovniPrihodi,
+	SUM(vp.IznosVanrednogPrihoda) VanredniPrihodi,
+	SUM(rp.Bruto+vp.IznosVanrednogPrihoda) UkupniPrihodi
 FROM prihodi.dbo.Osoba AS o
 INNER JOIN prihodi.dbo.RedovniPrihodi AS rp
 ON o.OsobaID=rp.OsobaID
@@ -279,10 +291,12 @@ AND tp.OblikVlasnistva LIKE 'javno ustanova'
 GROUP BY CONCAT(o.Ime, ' ', o.PrezIme), o.Spol
 
 --c)	Modificirati prethodni upit 5_b na nacin da se prikazu samo oni zapisi kod -kojih- je suma ukupnih bruto i ukupnih vanderednih prihoda (SumaBruto+SumaNeto) -veca od -10000KM Retultate upita sortirati prema ukupnoj vrijednosti prihoda -obrnuto -abecedno(Prihodi)
-SELECT CONCAT(o.Ime, ' ', o.PrezIme) ImePrezime, o.Spol,
-SUM(rp.Bruto) RedovniPrihodi,
-SUM(vp.IznosVanrednogPrihoda) VanredniPrihodi,
-SUM(rp.Bruto+vp.IznosVanrednogPrihoda) UkupniPrihodi
+SELECT 
+	CONCAT(o.Ime, ' ', o.PrezIme) ImePrezime, 
+	o.Spol,
+	SUM(rp.Bruto) RedovniPrihodi,
+	SUM(vp.IznosVanrednogPrihoda) VanredniPrihodi,
+	SUM(rp.Bruto+vp.IznosVanrednogPrihoda) UkupniPrihodi
 FROM prihodi.dbo.Osoba AS o
 INNER JOIN prihodi.dbo.RedovniPrihodi AS rp
 ON o.OsobaID=rp.OsobaID
