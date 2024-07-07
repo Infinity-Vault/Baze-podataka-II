@@ -185,23 +185,20 @@ ON sod.SpecialOfferID=so.SpecialOfferID
 --OBAVEZNO kreirati testni slucaj.(Novokreirana baza)
 --
 GO
-CREATE VIEW v_detalji
+CREATE OR ALTER VIEW v_detalji
 AS 
-SELECT CONCAT(p.FirstName, ' ', p.LastName) ImePrezime, a.City, 
-SUM(sod.UnitPrice*(1-sod.UnitPriceDiscount)*sod.OrderQty) SaPopustom,
-SUM(sod.UnitPrice*sod.OrderQty) BezPopusta,
-IIF(soh.CreditCardID IS NULL, 'Nije placeno karticom', 'Placeno karticom') Kartica
-FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
-INNER JOIN AdventureWorks2017.Sales.Customer AS c
-ON soh.CustomerID=c.CustomerID
-INNER JOIN AdventureWorks2017.Person.Person AS p
-ON c.PersonID=p.BusinessEntityID
-INNER JOIN AdventureWorks2017.Person.Address AS a
-ON soh.ShipToAddressID=a.AddressID
-INNER JOIN AdventureWorks2017.Sales.SalesOrderDetail AS sod
-ON soh.SalesOrderID=sod.SalesOrderID
-GROUP BY CONCAT(p.FirstName, ' ', p.LastName), a.City,
-IIF(soh.CreditCardID IS NULL, 'Nije placeno karticom', 'Placeno karticom')
+SELECT 
+	zn.NarudzbaID,
+	zn.ImeKupca, 
+	zn.NazivGrada, 
+	SUM(dn.Cijena*(1-dn.Popust)*dn.Kolicina) SaPopustom,
+	SUM(dn.Cijena*dn.Kolicina) BezPopusta,
+	IIF(zn.KreditnaKarticaID IS NULL, 'Nije placeno karticom', 'Placeno karticom') Kartica
+FROM ZaglavljeNarudzbe AS zn
+INNER JOIN DetaljiNaruzbe AS dn
+ON zn.NarudzbaID=dn.NarudzbaID
+GROUP BY zn.NarudzbaID, zn.ImeKupca, zn.NazivGrada,
+IIF(zn.KreditnaKarticaID IS NULL, 'Nije placeno karticom', 'Placeno karticom')
 
 SELECT * 
 FROM v_detalji
@@ -241,7 +238,9 @@ EXEC sp_insert_ZaglavljeNarudzbe
 
 --c)(6 bodova) Kreirati upit kojim ce se prikazati ukupan broj proizvoda po --kategorijama. Uslov je da se prikazu samo one kategorije kojima ne pripada vise od --30 proizvoda, a sadrze broj u bilo kojoj od rijeci i ne nalaze se u prodaji.--(AdventureWorks2017)
 --
-SELECT pc.Name, COUNT(p.ProductID) BrojProizvoda
+SELECT 
+	pc.Name, 
+	COUNT(p.ProductID) BrojProizvoda
 FROM AdventureWorks2017.Production.Product AS p
 INNER JOIN AdventureWorks2017.Production.ProductSubcategory AS psc
 ON p.ProductSubcategoryID=psc.ProductSubcategoryID
@@ -256,7 +255,10 @@ HAVING COUNT(p.ProductID)<=30
 --Rezultat upita treba prikazati ime i prezime uposlenika, odjel na kojem rade.
 --(AdventureWorks2017)
 --
-SELECT p.FirstName, p.LastName, d.Name Odjel
+SELECT 
+	p.FirstName, 
+	p.LastName, 
+	d.Name Odjel
 FROM AdventureWorks2017.HumanResources.Employee AS e
 INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
 ON e.BusinessEntityID=edh.BusinessEntityID
@@ -273,8 +275,9 @@ HAVING COUNT(d.DepartmentID)>1
 --Ukoliko postoji vise proizvoda sa istim vremenskim periodom kao i prvi prikazati ih -u- rezultatima upita.
 --(AdventureWorks2017)
 --
-SELECT TOP 1 WITH TIES p.Name, 
-DATEDIFF(DAY, p.SellStartDate, p.SellEndDate) DanaUProdaji
+SELECT TOP 1 WITH TIES 
+	p.Name, 
+	DATEDIFF(DAY, p.SellStartDate, p.SellEndDate) DanaUProdaji
 FROM AdventureWorks2017.Production.Product AS p
 INNER JOIN AdventureWorks2017.Production.ProductSubcategory AS psc
 ON p.ProductSubcategoryID=psc.ProductSubcategoryID
@@ -290,38 +293,45 @@ ORDER BY 2 DESC
 --
 SELECT * FROM
 (
-SELECT TOP 1 d.Name, COUNT(e.BusinessEntityID) BrojUposlenika
-FROM AdventureWorks2017.HumanResources.Department AS d
-INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
-ON d.DepartmentID=edh.DepartmentID
-INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
-ON edh.BusinessEntityID=e.BusinessEntityID
-GROUP BY d.Name
-ORDER BY 2 DESC
-)AS sq1,
+	SELECT TOP 1 
+		d.Name, 
+		COUNT(e.BusinessEntityID) BrojUposlenika
+	FROM AdventureWorks2017.HumanResources.Department AS d
+	INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
+	ON d.DepartmentID=edh.DepartmentID
+	INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
+	ON edh.BusinessEntityID=e.BusinessEntityID
+	GROUP BY d.Name
+	ORDER BY 2 DESC
+	)AS sq1,
 (
-SELECT TOP 1 d.Name, COUNT(e.BusinessEntityID) BrojUposlenika
-FROM AdventureWorks2017.HumanResources.Department AS d
-INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
-ON d.DepartmentID=edh.DepartmentID
-INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
-ON edh.BusinessEntityID=e.BusinessEntityID
-GROUP BY d.Name
-ORDER BY 2 
-)AS sq2
+	SELECT TOP 1 
+		d.Name, 
+		COUNT(e.BusinessEntityID) BrojUposlenika
+	FROM AdventureWorks2017.HumanResources.Department AS d
+	INNER JOIN AdventureWorks2017.HumanResources.EmployeeDepartmentHistory AS edh
+	ON d.DepartmentID=edh.DepartmentID
+	INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
+	ON edh.BusinessEntityID=e.BusinessEntityID
+	GROUP BY d.Name
+	ORDER BY 2 
+	)AS sq2
 
 --b)(10 bodova) Kreirati upit kojim ce se prikazati ukupan broj obradjenih narudzbi i --ukupnu vrijednost narudzbi sa popustom za svakog uposlenika pojedinacno, i to od --zadnje 30% kreiranih datumski kreiranih narudzbi. Rezultate sortirati prema -ukupnoj- vrijednosti u opadajucem redoslijedu.
 --(AdventureWorks2017)
 --
-SELECT e.BusinessEntityID, COUNT(*) UkupanBrojNarudzbi, 
-SUM(soh.SubTotal) UkupnaVrijednostNaruzbi
+SELECT 
+	e.BusinessEntityID, 
+	COUNT(*) UkupanBrojNarudzbi, 
+	SUM(soh.SubTotal) UkupnaVrijednostNaruzbi
 FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
 INNER JOIN AdventureWorks2017.Sales.SalesPerson AS sp
 ON soh.SalesPersonID=sp.BusinessEntityID
 INNER JOIN AdventureWorks2017.HumanResources.Employee AS e
 ON sp.BusinessEntityID=e.BusinessEntityID
 WHERE soh.OrderDate IN
-	(SELECT TOP 30 PERCENT soh1.OrderDate 
+	(SELECT TOP 30 PERCENT 
+		soh1.OrderDate 
 	 FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh1
 	 ORDER BY soh1.OrderDate DESC)
 GROUP BY e.BusinessEntityID
