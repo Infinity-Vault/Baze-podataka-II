@@ -172,9 +172,10 @@ SELECT * FROM Naslovi
 --svaku kategoriju proizvoda pojedinačno. Uslov je da proizvodi ne pripadaju --kategoriji bicikala, da im je
 --boja bijela ili crna te da ukupna prodana količina nije veća od 20000. Rezultate --sortirati prema ukupnoj
 --zaradi u opadajućem redoslijedu. (AdventureWorks2017)
-SELECT pc.Name Kategorija, 
-SUM(sod.OrderQty) UkupnaProdanaKolicina, 
-SUM(sod.UnitPrice*sod.OrderQty) UkupnaVrijednost
+SELECT 
+	pc.Name Kategorija, 
+	SUM(sod.OrderQty) UkupnaProdanaKolicina, 
+	SUM(sod.UnitPrice*sod.OrderQty) UkupnaVrijednost
 FROM AdventureWorks2017.Sales.SalesOrderDetail AS sod
 INNER JOIN AdventureWorks2017.Production.Product AS p
 ON sod.ProductID=p.ProductID
@@ -190,8 +191,11 @@ ORDER BY SUM(sod.UnitPrice*sod.OrderQty) DESC
 --c) (8 bodova) Kreirati upit koji prikazuje kupce koji su u maju mjesecu 2013 ili --2014 godine naručili
 --proizvod „Front Brakes“ u količini većoj od 5. Upitom prikazati spojeno ime i --prezime kupca, email,
 --naručenu količinu i datum narudžbe formatiran na način dan.mjesec.godina --(AdventureWorks2017)
-SELECT pe.FirstName + ' ' + pe.LastName ImePrezime,
-ea.EmailAddress, sod.OrderQty, FORMAT(soh.OrderDate, 'dd.MM.yyyy') DatumNarudzbe
+SELECT 
+	pe.FirstName + ' ' + pe.LastName ImePrezime,
+	ea.EmailAddress, 
+	sod.OrderQty, 
+	FORMAT(soh.OrderDate, 'dd.MM.yyyy') DatumNarudzbe
 FROM AdventureWorks2017.Production.Product AS p
 INNER JOIN AdventureWorks2017.Sales.SalesOrderDetail AS sod
 ON p.ProductID=sod.ProductID
@@ -211,7 +215,9 @@ AND p.Name LIKE 'Front Brakes' AND sod.OrderQty>5
 --da je dostavljen/isporučen kupcu. Također uzeti u obzir samo one proizvode na -kojima- je popust odobren.
 --U rezultatima upita prikazati naziv kompanije dobavljača i ukupnu prodanu količinu --proizvoda.
 --(Northwind)
-SELECT TOP 1 s.CompanyName, SUM(od.Quantity)
+SELECT TOP 1 
+	s.CompanyName, 
+	SUM(od.Quantity) UkupnaKolicina
 FROM Northwind.dbo.Suppliers AS s
 INNER JOIN Northwind.dbo.Products AS p
 on s.SupplierID=p.SupplierID
@@ -231,8 +237,9 @@ ORDER BY 2 DESC
 --stvarnu ukupnu vrijednost narudžbe zaokruženu na 2 decimale. Rezultate sortirati po- -ukupnoj vrijednosti
 --narudžbe u opadajućem redoslijedu.
 -- 43 boda
-SELECT soh.SalesOrderID, p.FirstName + ' ' + p.LastName,
-ROUND(SUM(sod.UnitPrice*sod.OrderQty), 2) stvarnavrijednost 
+SELECT 
+	soh.SalesOrderID, p.FirstName + ' ' + p.LastName ImePrezime,
+	ROUND(SUM(sod.UnitPrice*sod.OrderQty), 2) stvarnavrijednost 
 FROM AdventureWorks2017.Sales.SalesOrderDetail AS sod
 INNER JOIN AdventureWorks2017.Sales.SalesOrderHeader AS soh
 ON sod.SalesOrderID=soh.SalesOrderID
@@ -241,38 +248,42 @@ ON soh.CustomerID=c.CustomerID
 INNER JOIN AdventureWorks2017.Person.Person AS p
 ON c.PersonID=p.BusinessEntityID
 GROUP BY soh.SalesOrderID, p.FirstName + ' ' + p.LastName
-HAVING SUM(sod.UnitPrice*sod.OrderQty) - 
-SUM(sod.UnitPrice*(1-sod.OrderQty)*sod.OrderQty)>=2000
+HAVING SUM(sod.UnitPrice*sod.OrderQty) - SUM(sod.UnitPrice*(1-sod.OrderQty)*sod.OrderQty)>=2000
 
 --5.
 --a) (13 bodova) Kreirati upit koji će prikazati kojom kompanijom (ShipMethod(Name)) --je isporučen najveći
 --broj narudžbi, a kojom najveća ukupna količina proizvoda. (AdventureWorks2017)
 SELECT * FROM
 (
-SELECT TOP 1 sm.Name, COUNT(*) BrojNarudzbi
-FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
-INNER JOIN AdventureWorks2017.Purchasing.ShipMethod AS sm
-ON soh.ShipMethodID=sm.ShipMethodID
-GROUP BY sm.Name
-ORDER BY 2 DESC
+	SELECT TOP 1 
+		sm.Name, 
+		COUNT(*) BrojNarudzbi
+	FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
+	INNER JOIN AdventureWorks2017.Purchasing.ShipMethod AS sm
+	ON soh.ShipMethodID=sm.ShipMethodID
+	GROUP BY sm.Name
+	ORDER BY 2 DESC
 )AS sq1
 UNION
 SELECT * FROM
 (
-SELECT TOP 1 sm.Name, SUM(sod.OrderQty) UkupnaKolicinaProizvoda
-FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
-INNER JOIN AdventureWorks2017.Purchasing.ShipMethod AS sm
-ON soh.ShipMethodID=sm.ShipMethodID
-INNER JOIN AdventureWorks2017.Sales.SalesOrderDetail AS sod
-ON soh.SalesOrderID=sod.SalesOrderID
-GROUP BY sm.Name
-ORDER BY 2 DESC
+	SELECT TOP 1 
+		sm.Name, 
+		SUM(sod.OrderQty) UkupnaKolicinaProizvoda
+	FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
+	INNER JOIN AdventureWorks2017.Purchasing.ShipMethod AS sm
+	ON soh.ShipMethodID=sm.ShipMethodID
+	INNER JOIN AdventureWorks2017.Sales.SalesOrderDetail AS sod
+	ON soh.SalesOrderID=sod.SalesOrderID
+	GROUP BY sm.Name
+	ORDER BY 2 DESC
 )AS sq2
 
 --b) (8 bodova) Modificirati prethodno kreirani upit na način ukoliko je jednom --kompanijom istovremeno
 --isporučen najveći broj narudžbi i najveća ukupna količina proizvoda upitom -prikazati- poruku „Jedna
 --kompanija“, u suprotnom „Više kompanija“ (AdventureWorks2017)
-SELECT IIF(COUNT(sq.Name)<2,'jedna', 'vise')
+SELECT 
+	IIF(COUNT(sq.Name)<2,'jedna', 'vise')
 FROM
 (
 	SELECT * FROM
