@@ -229,7 +229,9 @@ EXEC sp_insert_DetaljiNarudzbe 	@NarudzbaID=45165, @ProizvodID=778, @Cijena=10, 
 --od 30 proizvoda, te da nazivi proizvoda se sastoje od 3 riječi, -asadrže'broju'bilo''- kojoj od riječi i još
 --uvijek se nalaze u prodaji. Također, ukupan broj -proizvodapo'kategorijamamora'biti''- veći od 50.
 --(AdventureWorks2017)
-SELECT pc.Name Kategorija, COUNT(p.ProductID) UkupanBrojProizvoda
+SELECT 
+	pc.Name Kategorija,
+	COUNT(p.ProductID) UkupanBrojProizvoda
 FROM AdventureWorks2017.Production.Product AS p
 INNER JOIN  AdventureWorks2017.Production.ProductSubcategory AS psc
 ON p.ProductSubcategoryID=psc.ProductSubcategoryID
@@ -245,7 +247,9 @@ HAVING COUNT(p.ProductID)>30
 --Proizvodu se početkom i po prestanku prodaje zabilježi --datum.Osnovni''uslovza''ponovno povlačenje u
 --prodaju je to da je ukupna prodana količina za svaki proizvod pojedinačno --bilaveć'''od 200 komada.
 --Kao rezultat upita očekuju se podaci u formatu --npr.Laptop''300komitd.''(AdventureWorks2017)
-SELECT p.Name, CAST(SUM(sod.OrderQty) AS NVARCHAR) + ' kom'
+SELECT 
+	p.Name, 
+	CAST(SUM(sod.OrderQty) AS NVARCHAR) + ' kom'
 FROM AdventureWorks2017.Production.Product AS p
 INNER JOIN AdventureWorks2017.Production.ProductSubcategory AS psc
 ON p.ProductSubcategoryID=psc.ProductSubcategoryID
@@ -262,22 +266,29 @@ HAVING SUM(sod.OrderQty)>200
 --isporuke proteklo manje dana od prosječnog broja dana koji --jebio''potrebanza''isporuku svih narudžbi.
 --(AdventureWorks2017)
 --30 bodova
-SELECT soh.SalesOrderID, p.FirstName + ' ' + p.LastName,
-SUM(soh.TotalDue) UkupnaVrijednost
+SELECT 
+	soh.SalesOrderID, 
+	p.FirstName + ' ' + p.LastName ImePrezime,
+	SUM(soh.TotalDue) UkupnaVrijednost
 FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
 INNER JOIN AdventureWorks2017.Sales.Customer AS c
 ON soh.CustomerID=c.CustomerID
 INNER JOIN AdventureWorks2017.Person.Person AS p
 ON c.PersonID=p.BusinessEntityID
 WHERE DATEDIFF(DAY, soh.OrderDate, soh.ShipDate)<
-(SELECT AVG(DATEDIFF(DAY, soh1.OrderDate, soh1.ShipDate)) FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh1)
+(
+	SELECT 
+		AVG(DATEDIFF(DAY, soh1.OrderDate, soh1.ShipDate)) 
+	FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh1)
 GROUP BY soh.SalesOrderID, p.FirstName + ' ' + p.LastName
 
 --5.
 --a) (9 bodova) Kreirati upit koji će prikazati one naslove --kojihje''ukupnoprodano''više od 30 komada a
 --napisani su od strane autora koji su napisali 2 -ilivišedjela/'romana.U'rezultatima''- upita prikazati naslov
 --i ukupnu prodanu količinu. (Pubs)
-SELECT t.title, SUM(s.qty)
+SELECT 
+	t.title, 
+	SUM(s.qty) Kolicina
 FROM pubs.dbo.titles AS t
 INNER JOIN pubs.dbo.titleauthor AS ta
 ON t.title_id=ta.title_id
@@ -294,14 +305,20 @@ HAVING SUM(s.qty)>30
 --b) (10 bodova) Kreirati upit koji će u % prikazati koliko --jenarudžbi''(odukupnog''broja kreiranih)
 --isporučeno na svaku od teritorija pojedinačno. Npr --Australia20.2%,''Canada12.01%''itd. Vrijednosti
 --dobijenih postotaka zaokružiti na dvije decimale --idodati'znak'%.''(AdventureWorks2017)
-SELECT sq1.Name, sq1.UkupanBrojNarudzbi,
-ROUND(sq1.UkupanBrojNarudzbi*1.0/(SELECT COUNT(*) FROM AdventureWorks2017.Sales.SalesOrderHeader)*100, 2) Procenat
+SELECT 
+	sq1.Name, 
+	sq1.UkupanBrojNarudzbi,
+	ROUND(sq1.UkupanBrojNarudzbi*1.0/(SELECT COUNT(*) FROM AdventureWorks2017.Sales.SalesOrderHeader)*100, 2) Procenat
 FROM
-(SELECT st.Name, COUNT(*) UkupanBrojNarudzbi
-FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
-INNER JOIN AdventureWorks2017.Sales.SalesTerritory AS st
-ON soh.TerritoryID=st.TerritoryID
-GROUP BY st.Name) AS sq1
+(
+	SELECT 
+		st.Name, 
+		COUNT(*) UkupanBrojNarudzbi
+	FROM AdventureWorks2017.Sales.SalesOrderHeader AS soh
+	INNER JOIN AdventureWorks2017.Sales.SalesTerritory AS st
+	ON soh.TerritoryID=st.TerritoryID
+	GROUP BY st.Name
+) AS sq1
 
 --c) (12 bodova) Kreirati upit koji će prikazati osobe koje --imajuredovne''prihodea''nemaju vanredne, i one
 --koje imaju vanredne a nemaju redovne. Lista treba da sadrži --spojenoime''iprezime''osobe, grad i adresu
@@ -314,30 +331,38 @@ GROUP BY st.Name) AS sq1
 SELECT * FROM
 (
 SELECT * FROM
-(SELECT o.Ime + ' ' + o.PrezIme ImePrezime, g.Grad,
-o.Adresa, SUM(rp.Neto) UkupniPrihodi,
-'ISKLJUCIVO REDOVNI' Opis
+(SELECT 
+	o.Ime + ' ' + o.PrezIme ImePrezime, 
+	g.Grad,
+	o.Adresa, 
+	SUM(rp.Neto) UkupniPrihodi,
+	'ISKLJUCIVO REDOVNI' Opis
 FROM prihodi.dbo.Osoba AS o
 INNER JOIN prihodi.dbo.RedovniPrihodi AS rp
 ON o.OsobaID=rp.OsobaID
 INNER JOIN prihodi.dbo.Grad AS g
 ON o.GradID=g.GradID
 WHERE o.OsobaID NOT IN 
-	(SELECT vp.OsobaID
+	(SELECT 
+		vp.OsobaID
 	FROM prihodi.dbo.VanredniPrihodi AS vp WHERE vp.OsobaID IS NOT NULL)
 GROUP BY o.Ime + ' ' + o.PrezIme, g.Grad, o.Adresa) AS r
 UNION
 SELECT * FROM
-(SELECT o.Ime + ' ' + o.PrezIme ImePrezime, g.Grad, 
-o.Adresa, SUM(vp.IznosVanrednogPrihoda) UkupniPrihodi,
-'ISKLJUCIVO VANREDNI' Opis
+(SELECT 
+	o.Ime + ' ' + o.PrezIme ImePrezime, 
+	g.Grad, 
+	o.Adresa, 
+	SUM(vp.IznosVanrednogPrihoda) UkupniPrihodi,
+	'ISKLJUCIVO VANREDNI' Opis
 FROM prihodi.dbo.Osoba AS o
 INNER JOIN prihodi.dbo.VanredniPrihodi AS vp
 ON o.OsobaID=vp.OsobaID
 INNER JOIN prihodi.dbo.Grad AS g
 ON o.GradID=g.GradID
 WHERE o.OsobaID NOT IN 
-	(SELECT rp.OsobaID
+	(SELECT 
+		rp.OsobaID
 	FROM prihodi.dbo.RedovniPrihodi AS rp WHERE rp.OsobaID IS NOT NULL)
 GROUP BY o.Ime + ' ' + o.PrezIme, g.Grad, o.Adresa) AS v
 ) AS sve
