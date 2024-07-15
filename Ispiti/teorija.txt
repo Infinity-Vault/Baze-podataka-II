@@ -1,0 +1,299 @@
+1.	Razlika izmedju WHERE i HAVING?
+
+    I WHERE i HAVING se koriste za filtriranje (redukciju) podataka. 
+    Razlika u tome je sto se WHERE koristi za restrikciju pojedinacnih redova dok se HAVING koristi za restrikciju grupa ispitivanjem agregatnih funkcija.
+
+2.	Sta je potrebno da bi transakcije bile izolovane?
+
+    Da bi transakcija bila izolovana ona:
+      -	Ne smije biti trajna
+      -	Ne smije biti vidljiva drugim transakcijama sve dok se transakcija ne potvrdi
+    To se postize na dva nacina:
+      -	Cache-Based mehanizam
+      -	Non Cache-Based mehanizam
+
+3.	Razlika izmedju VIEW i PROCEDURE
+
+    View je virtuelna tabela koja ne pohranjuje podatke, vec se koristi kao “pogled” u podatke, pojednostavljenje slozenih upita, ogranicenje pristupa podacima.
+    Procedura je set operacija koja se moze pohraniti u bazu podataka i kasnije iznova izvrsavati. One nam omogucavaju reusability koda i efikasniji rad.
+
+4.	Moze li se izvrsiti insert, update, delete za view(ili tabelu) u koji smo unijeli podatke sa primarnim kljucem. Objasniti.
+
+    Moze, ali ako je u pitanju jednostavni view. Primarni kljuc nam omogucava da nadjemo tacan red nad kojim zelimo izvrsiti DML operaciju.
+
+5.	Column based baze
+
+    a)	Query performanse (lahko brzo mozemo pristupiti relevantnim podacima preko kolona)
+    b)	Skalabilnost
+    c)	Dizajnirane su za brze citanje podataka u odnosu na Key-value baze
+    d)	Sporije brzine upisa podataka zbog kompleksnije strukture
+
+6.	Sta radi EXISTS operator?
+
+    EXISTS operator se koristi da provjeri da li postoje redovi u podupitu. Vraca TRUE ako postoji jedan ili vise redova, FALSE ako ne postoje redovi u podupitu.
+
+7.	Koji lock moze dobiti transakcija ako se radi Shared/Read lock?
+
+    Shared lock (djeljivo zaključavanje) – transakcija može čitati podatak, ali ga ne može ažurirati za razliku od write locka koji dozvoljava citanje i pisanje.
+
+8.	CAP teorema
+
+    To je mrežni shared-data sistem koji može imati NAJVIŠE DVIJE od sljedeće tri željene karakteristike:
+        -	Consistency (C) – jedna ažurna i dostupna verzija podataka za sve korisnike.
+        -	High availability (A) – distribuirana baza će uvijek dozvoliti klijentu da ažurira podatak bez odlaganja, a interne komunikacijske greške (ispadi) između repliciranih podataka ne smiju spriječiti ažuriranje
+        -	Tolerance to network partitions (P) – sposobnost sistema da odgovara na zahtjeve klijenata i u slučaju komunikacijskog ispada između particija baze podataka.
+
+9.	Neki kod je bio na fazon : 
+SELECT Ime, Prezime, avg(pare)
+FROM dbo.negdje 
+WHERE avg(pare) > (SELECT avg(pare) 
+                                  	FROM dbo.negdje 
+                                  	WHERE neki normalan uslov)
+	
+	    Dati kod nije validan jer je AVG agregatna f-ja i zbog toga ona mora ici u
+      HAVING, a ne WHERE. Takodjer, morali bi grupisati podatke po kolonama “Ime” i “Prezime”.
+
+
+10.	Gdje se u SELECT izrazu implementira operator selekcije?
+
+    Operator selekcije se implementira kao WHERE iskaz.
+
+11.	Može li se promijeniti tip podataka za stupac u tablici nakon što je tablica kreirana i ima unesene podatke? Objasnite.
+
+    Moze, s tim da se treba voditi racuna o kompatibilnosti tipova. Npr. INT se moze konvertovati u VARCHAR, ali obratno ne moze.
+
+12.	Što je rezultat sljedećeg SQL izraza:
+SELECT šifra kupca, naziv kupca, broj računa, iznos računa
+FROM računi, kupci
+
+    Rezultat ovog queryja je cross join tabela racuni i kupci u kojem se prikazuju kolone sifra_kupca, naziv_kupca, broj_racuna i iznos_racuna.
+
+13.	Što vraća OUTER JOIN? Objasnite.
+
+    OUTER JOIN vraca sve redove iz jedne tabele i matched vrijednosti iz druge tabele. Postoje 3 vrste OUTER JOIN-a: 
+        -	LEFT OUTER JOIN vraca sve redove iz lijeve tabele i matched vrijednosti iz desne
+        -	RIGHT OUTER JOIN vraca sve redove iz desne tabele i matched vrijednosti iz lijeve
+        -	FULL OUTER JOIN vraca sve redove gdje postoji match u jednoj od tabela. Ako ne postoji match, rezultat je null.
+
+14.	Koja su 3 preduslova UNION operatora
+
+    Svi SELECT izrazi kombinirani s UNION moraju:
+        -	Imati isti broj kolona
+        -	Imati isti redoslijed kolona
+        -	Imati iste tipove podataka za svaku odgovarajucu kolonu
+
+
+15.	Moze li se koristiti naredba CREATE TABLE za kreiranje FK. Objasniti
+
+    Ne. CREATE TABLE se koristi za kreiranje nove tabele. Da bismo kreirali FK moramo kolonu unutar tabele proglasiti stranim kljucem. Primjer:
+    CREATE TABLE Temp
+    (
+    DrugaTabelaID CONSTRAINT FK_Temp_DrugaTabela FOREIGN KEY 
+    REFERENCES DrugaTabela (DrugaTabelaID)
+    )
+
+16.	Gdje se u select izrazu implementira operator projekcije?
+
+    Operator projekcije se implementira kao SELECT.
+
+17.	Što je rezultat agregatne funkcije COUNT()? Što ona vraća?
+
+    Agregatna funkcija COUNT() vraca broj redova u trazenoj tabeli (jedna vrijednost).
+
+18.	Može li polje koje je strani ključ (foreign key) kod self join (pokazuje na istu tablicu u kojoj se nalazi) biti NOT NULL? Objasnite.
+
+    Moze. NOT NULL constraint i self join nisu ovisne jedna o drugoj. NOT NULL constraint samo naglasava da taj foreign key uvijek mora imati vrijednost.
+
+19.	Je li sljedeći SQL upit ispravan? Objasnite.
+SELECT avg(placa)
+FROM djelatnici
+GROUP BY sifra_odjel
+
+    Upit je validan, selectamo prosjecnu vrijednost placa iz tabele djelatnici i grupisemo vrijednosti po sifri odjela. Iako sifra_odjel kolona nece biti ispisana u upitu, rezultati ce se grupisati po njoj I ispisace se samo grupisane avg vrijednosti.
+
+20.	Je li moguće dodati primarni ključ nakon što je tablica kreirana i ima unesene podatke? Objasnite.
+
+    Moze, ali moramo voditi racuna o sljedecim stvarima:
+        a)	Kolona koju pretvaramo u PK mora imati unikatne podatke
+        b)	Ne smije imati NULL vrijednosti
+    PK dodajemo sa:
+    ALTER TABLE <ime tabele> 
+    ADD CONSTRAINT <identifikator> PRIMARY KEY(<ime kolone>)
+
+21.	Šta je kursor i kada se koristi?
+
+    Kursor je varijabla koja pokazuje na jedan red iz rezultata upita koji vraća kolekciju redova. Koristi se za kretanje red po red (loop over the query result). 
+    Omogućava obradu jednog reda u jednom trenutku, koristi se za izvršavanje serijskih procesa, 
+    ažuriranje podataka u većem broju tabela, ažuriranje podataka sa pre-definisanim skupom podataka kao inputom kursora.
+
+22.	Koje su sličnosti i razlike između procedura i triggera?
+
+    Slicnosti:
+        a)	Oboje se mogu koristiti za DML operacije (INSERT, UPDATE, DELETE)
+        b)	Oboje podsticu reusability i tako cine odrzavanje i menadzment baza efikasnijim
+    Razlike:
+        a)	Triggeri se automatski izvrsavaju kao odgovor na neku drugu radnju (npr. da obrisane podatke iz jedne tabele inserta u drugu tabelu), dok se procedure izvrsavaju preko EXEC komande.
+        b)	Procedure su dizajnirane za izvrsavanje vise operacija, dok su triggeri dizajnirani da izvrse DML operacije prije ili poslije odredjenog dogadjaja
+        c)	Procedure mogu vracati vrijednosti dok triggeri ne vracaju vrijednosti.
+
+23.	Šta podrazumijeva zaključavanje (locking) nad podacima?
+
+    Zakljucavanje nad podacima je procedura koja se koristi za kontrolu kongruentnog pristupa podacima. Kada jedna transakcija pristupa bazi podataka, zakljucavanje moze sprijeciti pristup drugim transakcijama i, na taj nacin, izbjegavamo netacne rezultate.
+
+24.	Koja je razlika između ACID i BASE pristupa?
+
+    ACID model idealan je za sustave koji zahtijevaju transakcijski integritet.
+    BASE model je prikladan za sustave koji zahtijevaju visoku dostupnost i skalabilnost.
+
+25.	Ako je nad podatkom već podignuto EXCLUSIVE /WRITE (ekskluzivno/za pisanje) zaključavanje, koje zaključavanje može dobiti sljedeća transakcija?
+
+    Exclusive lock – transakcija može i čitati i ažurirati podatak
+
+26.	Navesti barem 3 osobine Key-value baza.
+
+    a)	Jednostavna struktura (podaci su spremljeni kao key-value parovi)
+    b)	Performanse (visok protok podataka kao i velika brzina pretrage i spremanja podataka)
+    c)	Skalabilnost
+    d)	Ogranicenost upita (obzirom da imamo samo dvije kolone, nemamo puno opcija po kojima mozemo pretrazivati podatke)
+    e)	Relacije (key-value baze nisu najbolja opcija ako zelimo uspostaviti veze izmedju tabela)
+
+27.	Moze li se dodati strani kljuc u vec kreiranu tabelu, objasni
+
+    Može se dobiti pomoću ALTER TABLE komande novi Foreign Key, ali svi do tada spremljeni zapisi će imati za FK NULL vrijednost ako se ne izvrši UPDATE zapisa pored toga. To možemo uraditi na sljedeći način:
+    ALTER TABLE racuni
+    ADD CONSTRAINT fk_kupac FOREIGN KEY(id_kupac) REFERENCES kupci(sifra)
+
+28.	Slicnosti i razlike izmedju procedura i funkcija
+
+    Slicnosti: 
+        a)	Oboje se koriste za kreiranje reusable koda
+        b)	Oboje mogu primati parametre
+
+    Razlike:
+        a)	Procedure su dizajnirane za DML akcije (INSERT, UPDATE, DELETE), dok funkcije vracaju jednu vrijednost ili tabelu
+        b)	Procedure mogu a i ne moraju vracati vrijednost, dok funkcije moraju vracati vrijednost
+
+29.	Da li se može COUNT(SUM(izraz))
+
+    Ne moze. SUM i COUNT su oboje agregatne f-je koje vracaju jednu vrijednost tako da nema smisla prebrojavati SUM jer je to uvijek jedna vrijednost (jedan red). 
+    Syntax error.
+
+30.	U cemu je razlika izmedju jednostavnog i slozenog viewa?
+
+    Jednostavni view:
+        a)	Podaci su iz jedne tabele
+        b)	Ne sadrzi f-je ili grupe
+        c)	Moze izvrsiti DML
+    Slozeni view:
+        a)	Podaci su iz vise tabela
+        b)	Sadrzi f-je ili grupe
+        c)	Ne moze izvrsiti DML
+
+31.	Kada zapocinje transakcija?
+
+    Većina baza podataka započinje novu transakciju automatski:
+        - Pri prvom pristupu bazi podataka unutar sesije,
+        - Pri prvom pristupu koji slijedi nakon COMMIT naredbe
+    Neke baze podataka imaju naredbu START TRANSACTION (posebice za potporu ugnježdenim transakcijama)
+
+32.	U cemu je razlika izmedju JOIN i UNION?
+
+    JOIN veze tabele na osnovu zajednickih polja u tabeli i izbacuje ih kao jednu tabela, koristi se za vracanje podataka u obliku jedne tabele. JOIN moze vracati duplicate.
+
+    UNION kombinira rezultate iz dva select iskaza gdje mora biti isti broj kolona,  moraju biti kompatibilni tipovi podataka i moraju biti u istom redoslijedu. UNION ne vraca duplikate.
+
+33.	Sta je Thomas Write Rule?
+
+    - Transakcija T traži zapis podatka (x) koji je već pročitan od strane mlađe (kasnije) transakcije.Jedino rješenje je rollback transakcije T i ponovni start s mlađim timestamp-om.
+    - Transakcija T traži zapis za (x) čija je vrijednost već zapisana od strane mlađe transakcije. Slijedi da transakcija T pokušava upisati zastarjelu vrijednost. 
+      U ovom slučaju, write operacija se ignorira – tzv. ignore obsolete write rule – što omogućava veću konkurentnost.
+    = Inače, operacija zapisa se može izvršiti. Postavlja se write_timestamp(x) = ts(T).
+
+34.	Kako dolazi do zaustavljanja transakcije ?
+
+    Prekid transakcije poništava rezultate transakcije – to je kao da transakcije nikada nije ni započela
+    Transakcije se mogu prekinuti na 3 načina:
+        -	Sustav se sruši: Sve aktivne transakcije se prekidaju
+        -	Dolazi do nepredviđene pogreške tijekom izvršavanja transakcije
+        -	Transakcija se eksplicitno prekida (ROLLBACK)
+    Transakcja je završena kada je ili potvrđena ili prekinuta.
+
+35.	Sta radi EXCEPT, a sta INTERSECT?
+
+    EXCEPT vraca sve redove koji se nalaze u lijevoj, a ne nalaze se u desnoj tabeli.
+    INTERSECT vraca zajednicke redove iz obje tabele.
+
+36.	Zasto nastaje Deadlock?
+
+    Deadlock nastaje kada dvije (ili vise) transakcija cekaju da se otpusti lock koji drzi druga transakcija.
+
+37.	Sta je ROLE?
+
+    ROLE je naziv za skup od 0 ili vise privilegija koje se mogu dodijeliti korisnicima baze podataka kojima je potrebna ista razina pristupa.
+
+38.	Koja je konkretna razlika izmedju tablica i view-a?
+
+    View ne pohranjuje podatke u bazu, vec sluzi kao virtuelna tabela koja moze jednostavnije prikazati slozenije upite.
+    Tablice pohranjuju podatke u bazu i one su elementarni dio baza podataka.
+
+39.	Objasni EXCLUSIVE LOCK?
+
+    Kod EXCLUSIVE LOCK-a transakcija moze citati i azurirati podatke.
+
+40.	Objasni dvofazno zakljucavanje (2PL)
+
+    Transakcija slijedi 2PL protocol ako sve operacije zakljucavanja prethode prvoj operaciji otkljucavanja u transakciji.
+    Pravila:
+        a)	Transakcija mora zatraziti zakljucavanje prije rada s podatkom
+        b)	Jedanput kada transakcija otpusti zakljucavanje, ne moze vise nikako traziti postavljanje novi zakljucavanja
+
+41.	Sta je transakcija?
+
+    Transakcija je logicka radna jedinica baze podataka.
+    Podrazumijeva aktivnost ili niz aktivnosti koje izvrsava jedan korisnik ili aplikacijski program, a koje cita ili azurira sadrzaj baze podataka.
+
+42.	Sta je podupit i na koje nacine ih mozemo koristiti?
+
+    Podupit je SELECT iskaz ugnijezden u drugom SELECT iskazu.
+
+    Podupite koristimo:
+        - kao dio WHERE ili HAVING izraza
+        - kao dio FROM izraza
+        - kao dio SELECT, GROUP BY ili ORDER BY izraza
+
+43.	ACID i BASE osobine kod transakcija?
+    ACID:
+        - Atomicity (sve ili nista)
+        - Consistency (transakcija mora transformirati bazu iz jednog konzistentnog stanja u drugo)
+        - Isolation (transakcije se izvrsavaju neovisno jedna od druge)
+        - Durability (rezultat uspjesno zavrsenih transakcija se trajno biljezi u bazu i ne smije se gubiti zbog eventualnih naknadnih greski)
+
+    BASE:
+        - Basically available (sistem garantira raspolozivost podataka prema CAP teoremu)
+        - Soft state (status se moze promijeniti tokom vremena, tako da se cak i u vremenu bez inputa, mogu javiti promjene zbog eventualne raspolozivosti)
+        - Eventually consistent (sistem ce eventualno postati konzistentan jedanput kada prestane primate inpute, ako se prestanu raditi dodatna azuriranja podataka, tad ace sva citanja za odredjeni item eventualno vratiti istu vrijednost)
+
+44.	Slicnosti i razlike izmedju obicnog i korelacijskoj podupita
+
+    Slicnosti:
+        -	Oba podupita se mogu koristiti u SELECT, FROM, WHERE i HAVING dijelu
+
+    Razlike: 
+        -	Korelacijski podupit se izvrsava vise puta, tj. izvrsice se za svaki red iz vanjskog upita, dok se obicni podupit izvrsava samo jedanput.
+
+45.	Koraci izvrsavanja korelacijskog podupita
+
+    -	uzima kandidat red iz vanjskog upita
+      izvršava unutarnji upit koristeüi podatke iz kandidat reda
+    -	koristi vrijednosti iz unutarnjeg upita da kvalificira ili
+      diskvalificira kandidat red
+    -	ponavlja dok ne obradi sve kandidat retke iz
+      vanjskog upita
+
+46.	Navedi 3 karakteristike graf baza
+
+    -	Izvrsne u radu s kompleksnim, medjusobno povezanim podacima
+    -	Dozvoljavaju indeksiranje svojstava cvora i relacije
+    -	Pronalaze puteve izmedju dva cvora (najkraci put ako ih ima vise)
+    -	Problem sa skalabilnoscu zbog kompleksnosti
+    -	Zbog komplikovane strukture stvaraju se komplikacije prilikom implementacije
