@@ -8,6 +8,7 @@
     Da bi transakcija bila izolovana ona:
       -	Ne smije biti trajna
       -	Ne smije biti vidljiva drugim transakcijama sve dok se transakcija ne potvrdi
+
     To se postize na dva nacina:
       -	Cache-Based mehanizam
       -	Non Cache-Based mehanizam
@@ -23,10 +24,10 @@
 
 5.	Column based baze
 
-    a)	Query performanse (lahko brzo mozemo pristupiti relevantnim podacima preko kolona)
-    b)	Skalabilnost
-    c)	Dizajnirane su za brze citanje podataka u odnosu na Key-value baze
-    d)	Sporije brzine upisa podataka zbog kompleksnije strukture
+    a) Query performanse (lahko brzo mozemo pristupiti relevantnim podacima preko kolona)
+    b) Skalabilnost
+    c) Dizajnirane su za brze citanje podataka u odnosu na Key-value baze
+    d) Sporije brzine upisa podataka zbog kompleksnije strukture
 
 6.	Sta radi EXISTS operator?
 
@@ -39,9 +40,9 @@
 8.	CAP teorema
 
     To je mrežni shared-data sistem koji može imati NAJVIŠE DVIJE od sljedeće tri željene karakteristike:
-        -	Consistency (C) – jedna ažurna i dostupna verzija podataka za sve korisnike.
-        -	High availability (A) – distribuirana baza će uvijek dozvoliti klijentu da ažurira podatak bez odlaganja, a interne komunikacijske greške (ispadi) između repliciranih podataka ne smiju spriječiti ažuriranje
-        -	Tolerance to network partitions (P) – sposobnost sistema da odgovara na zahtjeve klijenata i u slučaju komunikacijskog ispada između particija baze podataka.
+        - Consistency (C) – jedna ažurna i dostupna verzija podataka za sve korisnike.
+        - High availability (A) – distribuirana baza će uvijek dozvoliti klijentu da ažurira podatak bez odlaganja, a interne komunikacijske greške (ispadi) između repliciranih podataka ne smiju spriječiti ažuriranje
+        - Tolerance to network partitions (P) – sposobnost sistema da odgovara na zahtjeve klijenata i u slučaju komunikacijskog ispada između particija baze podataka.
 
 9.	Neki kod je bio na fazon : 
 SELECT Ime, Prezime, avg(pare)
@@ -49,10 +50,9 @@ FROM dbo.negdje
 WHERE avg(pare) > (SELECT avg(pare) 
                                   	FROM dbo.negdje 
                                   	WHERE neki normalan uslov)
-	
-	    Dati kod nije validan jer je AVG agregatna f-ja i zbog toga ona mora ici u
-      HAVING, a ne WHERE. Takodjer, morali bi grupisati podatke po kolonama “Ime” i “Prezime”.
 
+      Dati kod nije validan jer je AVG agregatna f-ja i zbog toga ona mora ici u
+      HAVING, a ne WHERE. Takodjer, morali bi grupisati podatke po kolonama “Ime” i “Prezime”.
 
 10.	Gdje se u SELECT izrazu implementira operator selekcije?
 
@@ -71,25 +71,24 @@ FROM računi, kupci
 13.	Što vraća OUTER JOIN? Objasnite.
 
     OUTER JOIN vraca sve redove iz jedne tabele i matched vrijednosti iz druge tabele. Postoje 3 vrste OUTER JOIN-a: 
-        -	LEFT OUTER JOIN vraca sve redove iz lijeve tabele i matched vrijednosti iz desne
-        -	RIGHT OUTER JOIN vraca sve redove iz desne tabele i matched vrijednosti iz lijeve
-        -	FULL OUTER JOIN vraca sve redove gdje postoji match u jednoj od tabela. Ako ne postoji match, rezultat je null.
+        - LEFT OUTER JOIN vraca sve redove iz lijeve tabele i matched vrijednosti iz desne
+        - RIGHT OUTER JOIN vraca sve redove iz desne tabele i matched vrijednosti iz lijeve
+        - FULL OUTER JOIN vraca sve redove gdje postoji match u jednoj od tabela. Ako ne postoji match, rezultat je null.
 
 14.	Koja su 3 preduslova UNION operatora
 
     Svi SELECT izrazi kombinirani s UNION moraju:
-        -	Imati isti broj kolona
-        -	Imati isti redoslijed kolona
-        -	Imati iste tipove podataka za svaku odgovarajucu kolonu
-
+        - Imati isti broj kolona
+        - Imati isti redoslijed kolona
+        - Imati iste tipove podataka za svaku odgovarajucu kolonu
 
 15.	Moze li se koristiti naredba CREATE TABLE za kreiranje FK. Objasniti
 
     Ne. CREATE TABLE se koristi za kreiranje nove tabele. Da bismo kreirali FK moramo kolonu unutar tabele proglasiti stranim kljucem. Primjer:
     CREATE TABLE Temp
     (
-    DrugaTabelaID CONSTRAINT FK_Temp_DrugaTabela FOREIGN KEY 
-    REFERENCES DrugaTabela (DrugaTabelaID)
+    	DrugaTabelaID CONSTRAINT FK_Temp_DrugaTabela FOREIGN KEY 
+   	REFERENCES DrugaTabela (DrugaTabelaID)
     )
 
 16.	Gdje se u select izrazu implementira operator projekcije?
@@ -109,13 +108,15 @@ SELECT avg(placa)
 FROM djelatnici
 GROUP BY sifra_odjel
 
-    Upit je validan, selectamo prosjecnu vrijednost placa iz tabele djelatnici i grupisemo vrijednosti po sifri odjela. Iako sifra_odjel kolona nece biti ispisana u upitu, rezultati ce se grupisati po njoj I ispisace se samo grupisane avg vrijednosti.
+    Upit je validan, selectamo prosjecnu vrijednost placa iz tabele djelatnici i grupisemo vrijednosti po sifri odjela. Iako sifra_odjel kolona nece biti ispisana u upitu, 
+    rezultati ce se grupisati po njoj i ispisace se samo grupisane avg vrijednosti.
 
 20.	Je li moguće dodati primarni ključ nakon što je tablica kreirana i ima unesene podatke? Objasnite.
 
     Moze, ali moramo voditi racuna o sljedecim stvarima:
-        a)	Kolona koju pretvaramo u PK mora imati unikatne podatke
-        b)	Ne smije imati NULL vrijednosti
+        a) Kolona koju pretvaramo u PK mora imati unikatne podatke
+        b) Ne smije imati NULL vrijednosti
+
     PK dodajemo sa:
     ALTER TABLE <ime tabele> 
     ADD CONSTRAINT <identifikator> PRIMARY KEY(<ime kolone>)
@@ -129,16 +130,18 @@ GROUP BY sifra_odjel
 22.	Koje su sličnosti i razlike između procedura i triggera?
 
     Slicnosti:
-        a)	Oboje se mogu koristiti za DML operacije (INSERT, UPDATE, DELETE)
-        b)	Oboje podsticu reusability i tako cine odrzavanje i menadzment baza efikasnijim
+        a) Oboje se mogu koristiti za DML operacije (INSERT, UPDATE, DELETE)
+        b) Oboje podsticu reusability i tako cine odrzavanje i menadzment baza efikasnijim
+
     Razlike:
-        a)	Triggeri se automatski izvrsavaju kao odgovor na neku drugu radnju (npr. da obrisane podatke iz jedne tabele inserta u drugu tabelu), dok se procedure izvrsavaju preko EXEC komande.
-        b)	Procedure su dizajnirane za izvrsavanje vise operacija, dok su triggeri dizajnirani da izvrse DML operacije prije ili poslije odredjenog dogadjaja
-        c)	Procedure mogu vracati vrijednosti dok triggeri ne vracaju vrijednosti.
+        a) Triggeri se automatski izvrsavaju kao odgovor na neku drugu radnju (npr. da obrisane podatke iz jedne tabele inserta u drugu tabelu), dok se procedure izvrsavaju preko EXEC komande.
+        b) Procedure su dizajnirane za izvrsavanje vise operacija, dok su triggeri dizajnirani da izvrse DML operacije prije ili poslije odredjenog dogadjaja
+        c) Procedure mogu vracati vrijednosti dok triggeri ne vracaju vrijednosti.
 
 23.	Šta podrazumijeva zaključavanje (locking) nad podacima?
 
-    Zakljucavanje nad podacima je procedura koja se koristi za kontrolu kongruentnog pristupa podacima. Kada jedna transakcija pristupa bazi podataka, zakljucavanje moze sprijeciti pristup drugim transakcijama i, na taj nacin, izbjegavamo netacne rezultate.
+    Zakljucavanje nad podacima je procedura koja se koristi za kontrolu kongruentnog pristupa podacima. Kada jedna transakcija pristupa bazi podataka, 
+    zakljucavanje moze sprijeciti pristup drugim transakcijama i, na taj nacin, izbjegavamo netacne rezultate.
 
 24.	Koja je razlika između ACID i BASE pristupa?
 
@@ -151,11 +154,11 @@ GROUP BY sifra_odjel
 
 26.	Navesti barem 3 osobine Key-value baza.
 
-    a)	Jednostavna struktura (podaci su spremljeni kao key-value parovi)
-    b)	Performanse (visok protok podataka kao i velika brzina pretrage i spremanja podataka)
-    c)	Skalabilnost
-    d)	Ogranicenost upita (obzirom da imamo samo dvije kolone, nemamo puno opcija po kojima mozemo pretrazivati podatke)
-    e)	Relacije (key-value baze nisu najbolja opcija ako zelimo uspostaviti veze izmedju tabela)
+    a) Jednostavna struktura (podaci su spremljeni kao key-value parovi)
+    b) Performanse (visok protok podataka kao i velika brzina pretrage i spremanja podataka)
+    c) Skalabilnost
+    d) Ogranicenost upita (obzirom da imamo samo dvije kolone, nemamo puno opcija po kojima mozemo pretrazivati podatke)
+    e) Relacije (key-value baze nisu najbolja opcija ako zelimo uspostaviti veze izmedju tabela)
 
 27.	Moze li se dodati strani kljuc u vec kreiranu tabelu, objasni
 
@@ -166,12 +169,12 @@ GROUP BY sifra_odjel
 28.	Slicnosti i razlike izmedju procedura i funkcija
 
     Slicnosti: 
-        a)	Oboje se koriste za kreiranje reusable koda
-        b)	Oboje mogu primati parametre
+        a) Oboje se koriste za kreiranje reusable koda
+        b) Oboje mogu primati parametre
 
     Razlike:
-        a)	Procedure su dizajnirane za DML akcije (INSERT, UPDATE, DELETE), dok funkcije vracaju jednu vrijednost ili tabelu
-        b)	Procedure mogu a i ne moraju vracati vrijednost, dok funkcije moraju vracati vrijednost
+        a) Procedure su dizajnirane za DML akcije (INSERT, UPDATE, DELETE), dok funkcije vracaju jednu vrijednost ili tabelu
+        b) Procedure mogu a i ne moraju vracati vrijednost, dok funkcije moraju vracati vrijednost
 
 29.	Da li se može COUNT(SUM(izraz))
 
@@ -181,19 +184,21 @@ GROUP BY sifra_odjel
 30.	U cemu je razlika izmedju jednostavnog i slozenog viewa?
 
     Jednostavni view:
-        a)	Podaci su iz jedne tabele
-        b)	Ne sadrzi f-je ili grupe
-        c)	Moze izvrsiti DML
+        a) Podaci su iz jedne tabele
+        b) Ne sadrzi f-je ili grupe
+        c) Moze izvrsiti DML
+
     Slozeni view:
-        a)	Podaci su iz vise tabela
-        b)	Sadrzi f-je ili grupe
-        c)	Ne moze izvrsiti DML
+        a) Podaci su iz vise tabela
+        b) Sadrzi f-je ili grupe
+        c) Ne moze izvrsiti DML
 
 31.	Kada zapocinje transakcija?
 
     Većina baza podataka započinje novu transakciju automatski:
         - Pri prvom pristupu bazi podataka unutar sesije,
         - Pri prvom pristupu koji slijedi nakon COMMIT naredbe
+
     Neke baze podataka imaju naredbu START TRANSACTION (posebice za potporu ugnježdenim transakcijama)
 
 32.	U cemu je razlika izmedju JOIN i UNION?
@@ -211,11 +216,12 @@ GROUP BY sifra_odjel
 
 34.	Kako dolazi do zaustavljanja transakcije ?
 
-    Prekid transakcije poništava rezultate transakcije – to je kao da transakcije nikada nije ni započela
+    Prekid transakcije poništava rezultate transakcije – to je kao da transakcije nikada nije ni započela.
     Transakcije se mogu prekinuti na 3 načina:
-        -	Sustav se sruši: Sve aktivne transakcije se prekidaju
-        -	Dolazi do nepredviđene pogreške tijekom izvršavanja transakcije
-        -	Transakcija se eksplicitno prekida (ROLLBACK)
+        - Sustav se sruši: Sve aktivne transakcije se prekidaju
+        - Dolazi do nepredviđene pogreške tijekom izvršavanja transakcije
+        - Transakcija se eksplicitno prekida (ROLLBACK)
+
     Transakcja je završena kada je ili potvrđena ili prekinuta.
 
 35.	Sta radi EXCEPT, a sta INTERSECT?
@@ -244,8 +250,8 @@ GROUP BY sifra_odjel
 
     Transakcija slijedi 2PL protocol ako sve operacije zakljucavanja prethode prvoj operaciji otkljucavanja u transakciji.
     Pravila:
-        a)	Transakcija mora zatraziti zakljucavanje prije rada s podatkom
-        b)	Jedanput kada transakcija otpusti zakljucavanje, ne moze vise nikako traziti postavljanje novi zakljucavanja
+        a) Transakcija mora zatraziti zakljucavanje prije rada s podatkom
+        b) Jedanput kada transakcija otpusti zakljucavanje, ne moze vise nikako traziti postavljanje novi zakljucavanja
 
 41.	Sta je transakcija?
 
@@ -271,29 +277,39 @@ GROUP BY sifra_odjel
     BASE:
         - Basically available (sistem garantira raspolozivost podataka prema CAP teoremu)
         - Soft state (status se moze promijeniti tokom vremena, tako da se cak i u vremenu bez inputa, mogu javiti promjene zbog eventualne raspolozivosti)
-        - Eventually consistent (sistem ce eventualno postati konzistentan jedanput kada prestane primate inpute, ako se prestanu raditi dodatna azuriranja podataka, tad ace sva citanja za odredjeni item eventualno vratiti istu vrijednost)
+        - Eventually consistent (sistem ce eventualno postati konzistentan jedanput kada prestane primate inpute, ako se prestanu raditi dodatna azuriranja podataka, tada ce sva citanja za odredjeni item eventualno 		  vratiti istu vrijednost)
 
 44.	Slicnosti i razlike izmedju obicnog i korelacijskoj podupita
 
     Slicnosti:
-        -	Oba podupita se mogu koristiti u SELECT, FROM, WHERE i HAVING dijelu
+        - Oba podupita se mogu koristiti u SELECT, FROM, WHERE i HAVING dijelu
 
     Razlike: 
-        -	Korelacijski podupit se izvrsava vise puta, tj. izvrsice se za svaki red iz vanjskog upita, dok se obicni podupit izvrsava samo jedanput.
+        - Korelacijski podupit se izvrsava vise puta, tj. izvrsice se za svaki red iz vanjskog upita, dok se obicni podupit izvrsava samo jedanput.
 
 45.	Koraci izvrsavanja korelacijskog podupita
 
-    -	uzima kandidat red iz vanjskog upita
+    - uzima kandidat red iz vanjskog upita
       izvršava unutarnji upit koristeüi podatke iz kandidat reda
-    -	koristi vrijednosti iz unutarnjeg upita da kvalificira ili
+    - koristi vrijednosti iz unutarnjeg upita da kvalificira ili
       diskvalificira kandidat red
-    -	ponavlja dok ne obradi sve kandidat retke iz
+    - ponavlja dok ne obradi sve kandidat retke iz
       vanjskog upita
 
 46.	Navedi 3 karakteristike graf baza
 
-    -	Izvrsne u radu s kompleksnim, medjusobno povezanim podacima
-    -	Dozvoljavaju indeksiranje svojstava cvora i relacije
-    -	Pronalaze puteve izmedju dva cvora (najkraci put ako ih ima vise)
-    -	Problem sa skalabilnoscu zbog kompleksnosti
-    -	Zbog komplikovane strukture stvaraju se komplikacije prilikom implementacije
+    - Izvrsne u radu s kompleksnim, medjusobno povezanim podacima
+    - Dozvoljavaju indeksiranje svojstava cvora i relacije
+    - Pronalaze puteve izmedju dva cvora (najkraci put ako ih ima vise)
+    - Problem sa skalabilnoscu zbog kompleksnosti
+    - Zbog komplikovane strukture stvaraju se komplikacije prilikom implementacije
+
+47.	Sta podrazumijeva visekorisnicki pristup podacima
+
+    To podrazumijeva proces upravljanja simultanim operacijama nad bazom podataka bez utjecaja jednih na druge.
+
+48.	Da li je upit validan
+SELECT k.racuni, r.kupac
+FROM nekaTabela r
+
+    Upit nije validan jer nekaTabela ima alias r, pa SQL nece prepoznati kolonu k.racuni
