@@ -168,12 +168,8 @@ SELECT
 	sod.UnitPriceDiscount,
 	so.Description
 FROM AdventureWorks2017.Sales.SalesOrderDetail AS sod
-INNER JOIN AdventureWorks2017.Sales.SpecialOfferProduct AS sop
-ON sod.SpecialOfferID=sop.SpecialOfferID
 INNER JOIN AdventureWorks2017.Sales.SpecialOffer AS so
-ON sop.SpecialOfferID=so.SpecialOfferID
-
-SELECT * FROM DetaljiNarudzbe
+ON sod.SpecialOfferID=so.SpecialOfferID
 
 --4.
 --a) (6 bodova) Kreirati funkciju f_detalji u formi --tabelegdje''korisnikuslanjem''parametra identifikacijski
