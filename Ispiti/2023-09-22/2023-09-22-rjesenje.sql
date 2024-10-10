@@ -248,7 +248,7 @@ ON soh.CustomerID=c.CustomerID
 INNER JOIN AdventureWorks2017.Person.Person AS p
 ON c.PersonID=p.BusinessEntityID
 GROUP BY soh.SalesOrderID, p.FirstName + ' ' + p.LastName
-HAVING SUM(sod.UnitPrice*sod.OrderQty) - SUM(sod.UnitPrice*(1-sod.OrderQty)*sod.OrderQty)>=2000
+HAVING SUM(sod.UnitPrice*sod.OrderQty) - SUM(sod.UnitPrice*(1-sod.UnitPriceDiscount)*sod.OrderQty)>=2000
 
 --5.
 --a) (13 bodova) Kreirati upit koji će prikazati kojom kompanijom (ShipMethod(Name)) --je isporučen najveći
